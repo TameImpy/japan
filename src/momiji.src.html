@@ -1,0 +1,763 @@
+<meta charset="utf-8">
+<title>Momiji Field Notes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+/*FONTS*/
+:root{
+  --paper:#EDEBE4; --paper-2:#E3E0D6; --paper-3:#D8D4C7;
+  --ink:#22261F; --ink-2:#4A4E44; --ink-3:#7A7D72;
+  --line:#CFCBBD;
+  --momiji:#B8412B; --momiji-soft:#E4B7AA;
+  --koke:#5F7A4A; --koke-soft:#C6D2B7;
+  --ai:#2F4058; --ai-soft:#B7C0CF;
+  --kaki:#C97A2A; --yamabuki:#D9A63A;
+  --shadow: 0 1px 0 rgba(34,38,31,.06), 0 12px 32px -18px rgba(34,38,31,.35);
+  --leaf-a:#B8412B; --leaf-b:#C97A2A; --leaf-c:#D9A63A; --leaf-d:#8E3B2C;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#171A19; --paper-2:#1F2321; --paper-3:#2A2F2C;
+    --ink:#E6E1D6; --ink-2:#BFB9AC; --ink-3:#8B877C;
+    --line:#343A36;
+    --momiji:#D8664A; --momiji-soft:#5A2E24;
+    --koke:#8FA97A; --koke-soft:#2E3A28;
+    --ai:#9FB0C9; --ai-soft:#283344;
+    --kaki:#DD9247; --yamabuki:#E0B657;
+    --shadow: 0 1px 0 rgba(0,0,0,.4), 0 12px 32px -18px rgba(0,0,0,.8);
+    --leaf-a:#C9503A; --leaf-b:#B96E27; --leaf-c:#C9962F; --leaf-d:#7E3226;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#171A19; --paper-2:#1F2321; --paper-3:#2A2F2C;
+  --ink:#E6E1D6; --ink-2:#BFB9AC; --ink-3:#8B877C;
+  --line:#343A36;
+  --momiji:#D8664A; --momiji-soft:#5A2E24;
+  --koke:#8FA97A; --koke-soft:#2E3A28;
+  --ai:#9FB0C9; --ai-soft:#283344;
+  --kaki:#DD9247; --yamabuki:#E0B657;
+  --shadow: 0 1px 0 rgba(0,0,0,.4), 0 12px 32px -18px rgba(0,0,0,.8);
+  --leaf-a:#C9503A; --leaf-b:#B96E27; --leaf-c:#C9962F; --leaf-d:#7E3226;
+  color-scheme: dark;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:'ZenKaku','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','Noto Sans JP',system-ui,sans-serif;
+  font-size:16px; line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  font-feature-settings:"palt" 1;
+}
+.display{font-family:'Cormorant','Iowan Old Style','Palatino','Baskerville',Georgia,serif; font-weight:300; letter-spacing:-.01em}
+.kanji{font-family:'Shippori','Hiragino Mincho ProN','Yu Mincho','Noto Serif JP',serif; font-weight:400}
+.eyebrow{font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); font-weight:500}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--momiji); outline-offset:3px}
+
+/* ---------- Frame ---------- */
+.frame{display:grid; grid-template-columns:5.5rem minmax(0,1fr); min-height:100vh}
+@media (max-width:820px){ .frame{grid-template-columns:minmax(0,1fr)} }
+
+/* left rail: tategaki day index */
+.rail{position:sticky; top:0; height:100vh; border-right:1px solid var(--line); background:var(--paper);
+  display:flex; flex-direction:column; align-items:center; padding:1.6rem 0; gap:1rem; z-index:5}
+.rail .mark{writing-mode:vertical-rl; font-size:.95rem; letter-spacing:.35em; color:var(--ink-2); text-decoration:none; padding-bottom:.6rem}
+.rail nav{writing-mode:vertical-rl; display:flex; gap:.6rem; flex:1; align-items:center; overflow:hidden}
+.rail nav a{text-decoration:none; color:var(--ink-3); font-size:.92rem; letter-spacing:.28em; padding:.25rem .15rem; border-right:2px solid transparent; transition:color .2s,border-color .2s}
+.rail nav a.on{color:var(--momiji); border-right-color:var(--momiji)}
+.rail nav a:hover{color:var(--ink)}
+.rail .theme{background:none; border:1px solid var(--line); color:var(--ink-2); border-radius:999px; width:2rem; height:2rem; cursor:pointer; font-size:.8rem; display:grid; place-items:center}
+@media (max-width:820px){
+  .rail{position:sticky; top:0; height:auto; flex-direction:row; border-right:0; border-bottom:1px solid var(--line); padding:.5rem .8rem; gap:.6rem; overflow-x:auto}
+  .rail .mark{writing-mode:horizontal-tb; letter-spacing:.2em; padding:0 .4rem 0 0; white-space:nowrap}
+  .rail nav{writing-mode:horizontal-tb; gap:.2rem; align-items:center; overflow:visible; flex:0 0 auto}
+  .rail nav a{letter-spacing:.15em; white-space:nowrap; border-right:0; border-bottom:2px solid transparent}
+  .rail nav a.on{border-bottom-color:var(--momiji)}
+}
+main{min-width:0}
+
+/* ---------- Hero ---------- */
+.hero{position:relative; min-height:88vh; display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; overflow:hidden; padding:4rem clamp(1.4rem,5vw,5rem) 4rem}
+.hero canvas{position:absolute; inset:0; width:100%; height:100%; pointer-events:none}
+.hero .copy{position:relative; max-width:44rem}
+.hero .eyebrow{margin-bottom:1.2rem}
+.hero h1{font-size:clamp(3rem,7.5vw,6.4rem); line-height:.95; margin:0 0 1.4rem; text-wrap:balance; font-weight:300}
+.hero h1 em{font-style:italic; color:var(--momiji); font-weight:300}
+.hero p.lede{font-size:1.05rem; max-width:34rem; color:var(--ink-2); margin:0 0 2rem}
+.hero .facts{display:flex; flex-wrap:wrap; gap:1.6rem 2.4rem}
+.hero .facts div{display:grid; gap:.1rem}
+.hero .facts b{font-family:'Cormorant',serif; font-weight:400; font-size:1.7rem; line-height:1; letter-spacing:0}
+.hero .tate{position:relative; writing-mode:vertical-rl; font-size:clamp(2.6rem,6vw,4.6rem); line-height:1; letter-spacing:.18em; color:var(--ink); align-self:start; margin-top:-1rem; opacity:.92}
+.hero .tate small{font-size:.9rem; letter-spacing:.3em; color:var(--ink-3); margin-top:1.2rem; font-family:'ZenKaku',sans-serif}
+@media (max-width:820px){ .hero{grid-template-columns:minmax(0,1fr); min-height:auto; padding-top:3rem} .hero .tate{writing-mode:horizontal-tb; font-size:2rem; margin:0 0 1rem; order:-1} .hero .tate small{display:block; margin:.4rem 0 0}}
+
+/* ---------- Sections ---------- */
+section.block{padding:clamp(3rem,7vw,6rem) clamp(1.4rem,5vw,5rem); border-top:1px solid var(--line)}
+.block-head{display:grid; grid-template-columns:auto 1fr; gap:1.4rem; align-items:baseline; margin-bottom:2.4rem}
+.block-head .k{font-size:2rem; line-height:1; color:var(--momiji)}
+.block-head h2{font-size:clamp(1.9rem,3.6vw,2.8rem); margin:0; font-weight:300; text-wrap:balance}
+.block-head p{margin:.4rem 0 0; color:var(--ink-2); max-width:60ch}
+.prose{max-width:66ch; color:var(--ink-2)}
+.prose p{margin:0 0 1rem}
+
+/* route */
+.route{max-width:70rem}
+.route svg{width:100%; height:auto; display:block; overflow:visible}
+.route .stations{display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-top:.4rem}
+.route .stations div{padding-top:.6rem}
+.route .stations b{font-family:'Cormorant',serif; font-weight:400; font-size:1.55rem; display:block; line-height:1.05}
+.route .stations span{font-size:.85rem; color:var(--ink-2); display:block}
+.route .stations i{font-style:normal; color:var(--ink-3); font-size:.75rem; letter-spacing:.1em; text-transform:uppercase}
+@media (max-width:640px){ .route .stations{grid-template-columns:repeat(2,1fr)} }
+
+/* booking clock */
+.clock{display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); border-top:1px solid var(--line); border-left:1px solid var(--line); margin-top:3rem}
+.clock label{display:grid; grid-template-columns:auto minmax(0,1fr); gap:.8rem; padding:1.1rem 1.2rem; background:var(--paper); cursor:pointer; align-items:start; border-right:1px solid var(--line); border-bottom:1px solid var(--line)}
+.clock label:hover{background:var(--paper-2)}
+.clock input{appearance:none; width:1.05rem; height:1.05rem; border:1.5px solid var(--ink-3); border-radius:50%; margin-top:.25rem; cursor:pointer; position:relative}
+.clock input:checked{background:var(--koke); border-color:var(--koke)}
+.clock input:checked::after{content:""; position:absolute; inset:4px; border-radius:50%; background:var(--paper)}
+.clock label span{display:block}
+.clock .when{font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--momiji); font-weight:500}
+.clock .what{font-weight:500; color:var(--ink)}
+.clock .how{font-size:.86rem; color:var(--ink-2)}
+.clock input:checked ~ span .what{text-decoration:line-through; color:var(--ink-3)}
+.clock-note{font-size:.8rem; color:var(--ink-3); margin-top:.7rem}
+
+/* ---------- Day spreads ---------- */
+.day{padding:clamp(3rem,6vw,5rem) clamp(1.4rem,5vw,5rem); border-top:1px solid var(--line); display:grid; grid-template-columns:minmax(0,7rem) minmax(0,1fr); gap:clamp(1.2rem,4vw,4rem); scroll-margin-top:1rem}
+.day .num{position:sticky; top:2rem; align-self:start; writing-mode:vertical-rl; display:flex; gap:1rem; align-items:flex-start}
+.day .num .k{font-size:clamp(2.6rem,5vw,4rem); line-height:1; color:var(--ink); letter-spacing:.1em}
+.day .num .d{font-size:.8rem; letter-spacing:.3em; color:var(--ink-3); text-transform:uppercase; padding-top:.3rem}
+@media (max-width:820px){ .day{grid-template-columns:minmax(0,1fr); gap:1.2rem} .day .num{position:static; writing-mode:horizontal-tb; align-items:baseline} .day .num .k{font-size:2.4rem} }
+.day-head{display:grid; gap:.6rem; margin-bottom:2rem; max-width:62rem}
+.day-head .city{display:flex; gap:.9rem; align-items:baseline; flex-wrap:wrap}
+.day-head h3{font-size:clamp(1.8rem,3.4vw,2.6rem); font-weight:300; margin:0; line-height:1.1; text-wrap:balance}
+.day-head .cityname{color:var(--momiji); font-family:'Cormorant',serif; font-size:1.2rem; font-style:italic}
+.day-head .thread{color:var(--ink-2); max-width:62ch; margin:0}
+.day-head .wx{font-size:.8rem; color:var(--ink-3); display:flex; gap:1rem; flex-wrap:wrap}
+.day-head .wx b{font-weight:500; color:var(--ink-2)}
+.tags{display:flex; gap:.4rem; flex-wrap:wrap}
+.tag{font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; padding:.18rem .55rem; border-radius:2px; border:1px solid var(--line); color:var(--ink-2); font-weight:500; white-space:nowrap}
+.tag.garden{border-color:var(--koke); color:var(--koke)}
+.tag.nursery{border-color:var(--kaki); color:var(--kaki)}
+.tag.exotic{border-color:var(--ai); color:var(--ai)}
+.tag.night{border-color:var(--momiji); color:var(--momiji)}
+.tag.travel{border-style:dashed}
+.tag.book{background:var(--momiji); border-color:var(--momiji); color:var(--paper)}
+
+.stops{display:grid; gap:0; max-width:62rem; border-top:1px solid var(--line)}
+.stop{display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:1.2rem; padding:1.3rem 0; border-bottom:1px solid var(--line); align-items:start}
+.stop .t{font-family:'Cormorant',serif; font-size:1.35rem; font-weight:400; color:var(--ink-2); font-variant-numeric:tabular-nums; line-height:1.2; padding-top:.1rem}
+.stop .t small{display:block; font-family:'ZenKaku',sans-serif; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); margin-top:.25rem}
+.stop h4{margin:0 0 .25rem; font-size:1.12rem; font-weight:500; display:flex; gap:.6rem; align-items:baseline; flex-wrap:wrap; line-height:1.3}
+.stop h4 .jp{font-family:'Shippori',serif; font-weight:400; color:var(--ink-3); font-size:.95rem; letter-spacing:.06em}
+.stop p{margin:.35rem 0 0; color:var(--ink-2); max-width:64ch}
+.stop .meta{margin-top:.6rem; font-size:.8rem; color:var(--ink-3); display:flex; gap:.4rem 1.2rem; flex-wrap:wrap}
+.stop .meta span::before{content:"— "; color:var(--line)}
+.stop .meta span:first-child::before{content:""}
+.stop .tags{margin-top:.5rem}
+@media (max-width:640px){ .stop{grid-template-columns:minmax(0,1fr); gap:.3rem} .stop .t{font-size:1.15rem} }
+
+.eye{margin-top:2rem; max-width:62rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(16rem,1fr)); gap:1px; background:var(--line); border:1px solid var(--line)}
+.eye > div{background:var(--paper-2); padding:1.2rem 1.3rem}
+.eye .eyebrow{margin-bottom:.4rem}
+.eye .eyebrow.g{color:var(--koke)} .eye .eyebrow.r{color:var(--momiji)} .eye .eyebrow.b{color:var(--ai)}
+.eye p{margin:0; font-size:.94rem; color:var(--ink-2)}
+
+/* ---------- Field guide ---------- */
+.guide{display:grid; grid-template-columns:repeat(auto-fill,minmax(15.5rem,1fr)); border-top:1px solid var(--line); border-left:1px solid var(--line); max-width:70rem}
+.guide article{background:var(--paper); padding:1.3rem 1.3rem 1.4rem; display:grid; gap:.4rem; align-content:start; position:relative; border-right:1px solid var(--line); border-bottom:1px solid var(--line)}
+.guide article:hover{background:var(--paper-2)}
+.guide .swatch{width:100%; height:5px; margin-bottom:.4rem}
+.guide h4{margin:0; font-weight:500; font-size:1.02rem; line-height:1.3}
+.guide h4 .jp{font-family:'Shippori',serif; font-weight:400; color:var(--ink-3); font-size:.9rem; margin-left:.4rem}
+.guide .latin{font-family:'Cormorant',serif; font-style:italic; font-size:1.02rem; color:var(--ink-2)}
+.guide p{margin:0; font-size:.88rem; color:var(--ink-2)}
+.guide .where{font-size:.75rem; color:var(--ink-3); letter-spacing:.04em}
+
+.two{display:grid; grid-template-columns:repeat(auto-fit,minmax(18rem,1fr)); gap:2.5rem 4rem; max-width:70rem}
+.list{list-style:none; margin:0; padding:0; display:grid; gap:.9rem}
+.list li{display:grid; grid-template-columns:auto 1fr; gap:.9rem; align-items:baseline; padding-bottom:.9rem; border-bottom:1px solid var(--line)}
+.list li:last-child{border-bottom:0}
+.list .term{font-family:'Shippori',serif; font-size:1.25rem; color:var(--ink); min-width:3.6rem; letter-spacing:.06em}
+.list .rom{font-family:'Cormorant',serif; font-style:italic; font-size:1.05rem; color:var(--momiji); margin-right:.5rem}
+.list p{margin:0; font-size:.9rem; color:var(--ink-2)}
+h3.sub{font-weight:300; font-size:1.55rem; margin:0 0 1.2rem; font-family:'Cormorant',serif}
+
+/* tables */
+table{border-collapse:collapse; width:100%; font-size:.9rem; font-variant-numeric:tabular-nums}
+.tbl{overflow-x:auto; max-width:70rem}
+th,td{text-align:left; padding:.7rem .8rem; border-bottom:1px solid var(--line); vertical-align:top}
+th{font-weight:500; font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3)}
+td:first-child{font-weight:500}
+td .jp{font-family:'Shippori',serif; color:var(--ink-3); margin-left:.3rem; font-weight:400}
+
+.notes{display:grid; grid-template-columns:repeat(auto-fit,minmax(21rem,1fr)); gap:1.6rem 3rem; max-width:70rem}
+.notes h4{margin:0 0 .5rem; font-weight:500; font-size:1rem}
+.notes p, .notes li{font-size:.9rem; color:var(--ink-2); margin:0}
+.notes ul{margin:0; padding-left:1.1rem; display:grid; gap:.35rem}
+
+.phrase{display:grid; grid-template-columns:repeat(auto-fill,minmax(17rem,1fr)); gap:1.2rem 3rem; max-width:70rem}
+.phrase div{padding-bottom:.9rem; border-bottom:1px solid var(--line)}
+.phrase .jp{font-family:'Shippori',serif; font-size:1.05rem; display:block}
+.phrase .ro{font-family:'Cormorant',serif; font-style:italic; font-size:1.1rem; color:var(--momiji); display:block}
+.phrase .en{font-size:.85rem; color:var(--ink-2); display:block}
+
+footer{padding:3rem clamp(1.4rem,5vw,5rem) 4rem; border-top:1px solid var(--line); color:var(--ink-3); font-size:.82rem; display:grid; gap:.6rem; max-width:80rem}
+footer .kanji{font-size:1.4rem; color:var(--ink-2)}
+
+
+/* ---------- Photographs ---------- */
+figure{margin:0}
+.plate{max-width:62rem; margin:0 0 2rem}
+.plate img{display:block; width:100%; height:auto; aspect-ratio:21/9; object-fit:cover; background:var(--paper-3)}
+.fig{max-width:34rem; margin:.9rem 0 .2rem}
+.fig img{display:block; width:100%; height:auto; aspect-ratio:3/2; object-fit:cover; background:var(--paper-3)}
+figcaption{font-size:.8rem; color:var(--ink-2); margin-top:.5rem; line-height:1.5; max-width:64ch}
+figcaption .cr{display:block; font-size:.68rem; color:var(--ink-3); letter-spacing:.03em; margin-top:.15rem}
+figcaption .cr a{color:inherit; text-decoration:none; border-bottom:1px solid var(--line)}
+@media (max-width:640px){ .plate img{aspect-ratio:3/2} }
+
+/* reveal */
+.reveal{opacity:0; transform:translateY(14px); transition:opacity .7s ease, transform .7s ease}
+.reveal.in{opacity:1; transform:none}
+@media (prefers-reduced-motion: reduce){ .reveal{opacity:1; transform:none; transition:none} }
+
+@media print{
+  .rail, .hero canvas, .theme{display:none !important}
+  .frame{display:block}
+  body{background:#fff; color:#111}
+  .day, section.block{break-inside:avoid-page; padding:1.2rem 0}
+  .reveal{opacity:1; transform:none}
+}
+</style>
+
+<div class="frame">
+<aside class="rail" aria-label="Day index">
+  <a class="mark kanji" href="#top">紅葉狩り</a>
+  <nav id="daynav">
+    <a href="#route">路</a>
+    <a href="#d1">一</a><a href="#d2">二</a><a href="#d3">三</a><a href="#d4">四</a><a href="#d5">五</a><a href="#d6">六</a>
+    <a href="#d7">七</a><a href="#d8">八</a><a href="#d9">九</a><a href="#d10">十</a><a href="#d11">十一</a>
+    <a href="#guide">葉</a><a href="#home">帰</a>
+  </nav>
+  <button class="theme" id="themeBtn" aria-label="Toggle light and dark" title="Light / dark">◐</button>
+</aside>
+
+<main id="top">
+
+<header class="hero">
+  <canvas id="leaves" aria-hidden="true"></canvas>
+  <div class="copy">
+    <div class="eyebrow">Tokyo · Kyoto · Kanazawa — Sam’s trip · 18 → 29 November 2026</div>
+    <h1 class="display">Momiji <em>Field Notes</em></h1>
+    <p class="lede">Ten nights built for a gardener: bonsai villages and caudex dealers, moss temples and Meiji stroll gardens, three great conservatories, and the maples of Kyoto at the moment they turn. Every stop chosen for what it teaches about plants and the shaping of ground.</p>
+    <div class="facts">
+      <div><b>10</b><span class="eyebrow">nights</span></div>
+      <div><b>3</b><span class="eyebrow">cities</span></div>
+      <div><b>25</b><span class="eyebrow">gardens &amp; temples</span></div>
+      <div><b>9</b><span class="eyebrow">nurseries &amp; markets</span></div>
+      <div><b>4</b><span class="eyebrow">night illuminations</span></div>
+    </div>
+  </div>
+  <div class="tate kanji">紅葉狩り<small>momiji-gari · hunting autumn leaves</small></div>
+</header>
+
+<!-- ROUTE -->
+<section class="block" id="route">
+  <div class="block-head reveal">
+    <div class="k kanji">路</div>
+    <div>
+      <h2 class="display">The shape of the trip</h2>
+      <p>Sam flies out on Wed 18 Nov and lands the next morning; the return flight leaves on Sun 29. In between: a single anti-clockwise loop with no backtracking. Tokyo first for nurseries and bonsai (colour there peaks last), Kyoto in the heart of its maple week, then over the mountains to Kanazawa for pines under fresh yukitsuri, and one last Tokyo evening among lit maples.</p>
+    </div>
+  </div>
+
+  <div class="route reveal">
+    <svg viewBox="0 0 900 150" role="img" aria-label="Route: Tokyo to Kyoto to Kanazawa and back to Tokyo">
+      <defs>
+        <marker id="dot" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6"><circle cx="5" cy="5" r="4" fill="var(--momiji)"/></marker>
+      </defs>
+      <path id="routePath" d="M60,110 C200,110 220,40 340,40 S470,110 600,110 S760,40 840,40" fill="none" stroke="var(--ink-3)" stroke-width="1.2" stroke-dasharray="4 5"/>
+      <g fill="var(--paper)" stroke="var(--momiji)" stroke-width="1.5">
+        <circle cx="60" cy="110" r="7"/><circle cx="340" cy="40" r="7"/><circle cx="600" cy="110" r="7"/><circle cx="840" cy="40" r="7"/>
+      </g>
+      <g fill="var(--momiji)"><circle cx="60" cy="110" r="3"/><circle cx="340" cy="40" r="3"/><circle cx="600" cy="110" r="3"/><circle cx="840" cy="40" r="3"/></g>
+      <g font-family="Cormorant, serif" font-size="13" fill="var(--ink-3)" font-style="italic" stroke="var(--paper)" stroke-width="5" paint-order="stroke" stroke-linejoin="round">
+        <text x="180" y="66" text-anchor="middle">Nozomi · 2h15</text>
+        <text x="470" y="66" text-anchor="middle">Thunderbird + Tsurugi · 2h10</text>
+        <text x="720" y="66" text-anchor="middle">Kagayaki · 2h30</text>
+      </g>
+      <g font-family="ZenKaku, sans-serif" font-size="11" fill="var(--ink-2)" letter-spacing="1.5">
+        <text x="60" y="140" text-anchor="middle">THU 19 – SUN 22</text>
+        <text x="340" y="24" text-anchor="middle">SUN 22 – FRI 27</text>
+        <text x="600" y="140" text-anchor="middle">FRI 27 – SAT 28</text>
+        <text x="840" y="24" text-anchor="middle">SAT 28 – SUN 29</text>
+      </g>
+    </svg>
+    <div class="stations">
+      <div><i>3 nights</i><b class="display">Tokyo <span class="kanji" style="font-size:1rem;color:var(--ink-3)">東京</span></b><span>Nurseries, conservatories, Ōmiya bonsai</span></div>
+      <div><i>5 nights</i><b class="display">Kyoto <span class="kanji" style="font-size:1rem;color:var(--ink-3)">京都</span></b><span>Karesansui, moss, maple week, Taikan-ten</span></div>
+      <div><i>1 night</i><b class="display">Kanazawa <span class="kanji" style="font-size:1rem;color:var(--ink-3)">金沢</span></b><span>Kenroku-en, yukitsuri, samurai gardens</span></div>
+      <div><i>1 night</i><b class="display">Tokyo <span class="kanji" style="font-size:1rem;color:var(--ink-3)">東京</span></b><span>Lit maples, a tidal garden, fly home</span></div>
+    </div>
+  </div>
+
+  <div class="reveal" style="margin-top:3.5rem">
+    <h3 class="sub display">Booking clock — the things that sell out</h3>
+    <div class="clock" id="clock">
+      <label><input type="checkbox" data-k="katsura"><span><span class="when">Now · opened 1 Aug</span><span class="what">Katsura Imperial Villa, Tue 24 Nov, English tour 9:20</span><span class="how">sankan.kunaicho.go.jp — lottery for November; same-day tickets from 8:40 at the gate as fallback.</span></span></label>
+      <label><input type="checkbox" data-k="kokedera"><span><span class="when">~22 Sept · 2 months ahead</span><span class="what">Saihō-ji (Kokedera) moss temple, Tue 24 Nov, afternoon slot</span><span class="how">intosaihoji.com — ¥4,000, max 2 people per booking, includes sutra copying. Latecomers refused.</span></span></label>
+      <label><input type="checkbox" data-k="tofuku"><span><span class="when">Sept–Oct</span><span class="what">Tōfuku-ji early-morning entry (7:30) Mon 23 Nov</span><span class="how">Reserved 7:30–8:30 entry runs ~20 Nov–8 Dec. Worth every yen on a public holiday.</span></span></label>
+      <label><input type="checkbox" data-k="taikan"><span><span class="when">Sept</span><span class="what">Confirm Taikan-ten dates (assume Fri 20–Mon 23 Nov)</span><span class="how">bonsaijapan.jp — Miyako Messe, Kyoto. ¥1,500. Japan's biggest autumn bonsai show + sales hall.</span></span></label>
+      <label><input type="checkbox" data-k="rikugien"><span><span class="when">Oct–Nov</span><span class="what">Rikugien autumn illumination ticket, Sat 28 Nov</span><span class="how">Advance online ¥900 (door ¥1,100). 2025 ran 22 Nov–5 Dec; 2026 dates announced ~Sept.</span></span></label>
+      <label><input type="checkbox" data-k="murin"><span><span class="when">Oct</span><span class="what">Murin-an timed entry, Sun 22 Nov (+ ask about English garden tour)</span><span class="how">murin-an.jp — daily cap in peak season. Run by Ueyakato Landscape; gardener-led tours exist.</span></span></label>
+      <label><input type="checkbox" data-k="hotel"><span><span class="when">Now</span><span class="what">Kyoto rooms 22–27 Nov (Kyoto's busiest week)</span><span class="how">Garden-view ryokan: Yachiyo (beside Nanzen-ji, Ogawa Jihei garden), Kikokusō, or a Higashiyama machiya. Kanazawa Fri 27; Tokyo Sat 28 near Haneda or Komagome.</span></span></label>
+      <label><input type="checkbox" data-k="phyto"><span><span class="when">Before you fly</span><span class="what">Read the plant-import rules for home</span><span class="how">See “Bringing it home” below. Decide in advance whether you're buying seeds only, or tools and pots.</span></span></label>
+    </div>
+    <p class="clock-note">Ticks are remembered on this device.</p>
+  </div>
+</section>
+
+<!-- DAY 1 -->
+<article class="day" id="d1">
+  <div class="num"><span class="k kanji">一</span><span class="d">Thu 19 Nov</span></div>
+  <div>
+    <div class="day-head reveal">
+      <div class="city"><h3 class="display">Land softly, among the orchids</h3><span class="cityname">Tokyo</span></div>
+      <p class="thread">Wed 18 is the flight; Thu 19 is arrival day. One great greenhouse and one quiet bonsai garden — enough to feel where you are without fighting jet lag. Both are near Shinjuku / Shirokane, close to a good first-night base.</p>
+      <div class="wx"><span><b>Tokyo Nov</b> 17°C / 9°C · mostly dry · sunset 16:35</span><span><b>Colour</b> Tokyo maples still turning; ginkgo golden</span></div>
+    </div>
+    <!--IMG:shinjuku|Shinjuku Gyoen’s greenhouse at the end of November — 2,700 taxa under glass, with the garden’s maples turning around it.-->
+    <div class="stops reveal">
+      <div class="stop"><div class="t">~11:00<small>Haneda</small></div><div><h4>Arrive · Welcome Suica · takkyūbin the big bag <span class="jp">羽田</span></h4><p>Pick up a Welcome Suica (or add Suica to Apple Wallet). Forward the suitcase from the airport Yamato counter to the Kyoto hotel if you'd rather travel Tokyo light — ¥2,000–2,600, next-day.</p><div class="tags"><span class="tag travel">Transit</span></div></div></div>
+      <div class="stop"><div class="t">13:30<small>2 h</small></div><div><h4>Shinjuku Gyoen greenhouse &amp; gardens <span class="jp">新宿御苑</span></h4><p>The glasshouse holds ~2,700 taxa: an Ogasawara &amp; Okinawa native corner, tropical mountain zone, arid house, water lilies, and the orchid collection where Japanese orchid breeding began (their own hybrids on show). Then the Japanese garden pond, the giant Platanus avenue and the Taiwan pavilion.</p><div class="meta"><span>9:00–16:00, greenhouse last entry 15:00</span><span>¥500</span><span>Shinjuku-gyoemmae (Marunouchi) 5 min</span></div><div class="tags"><span class="tag exotic">Exotics</span><span class="tag garden">Garden</span></div></div></div>
+      <div class="stop"><div class="t">16:15<small>dusk</small></div><div><h4>Happō-en bonsai path <span class="jp">八芳園</span></h4><p>A free stroll garden in Shirokanedai with a path of bonsai aged 300–500+ years, koi pond and teahouse. Reopened after renovation in Oct 2025. Best in low light; check the wedding schedule as parts sometimes close.</p><div class="meta"><span>~10:00–20:30</span><span>Free</span><span>Shirokanedai (Namboku/Mita) 1 min</span></div><div class="tags"><span class="tag garden">Garden</span></div></div></div>
+      <div class="stop"><div class="t">18:30</div><div><h4>Early dinner, early night</h4><p>Tomorrow starts with a garden centre the size of a department store. Sleep.</p></div></div>
+    </div>
+    <div class="eye reveal">
+      <div><div class="eyebrow g">Gardener's eye</div><p>In the Shinjuku glasshouse, look for how the curators handle Ogasawara endemics — island flora that has no equivalent in Europe. Note the labelling convention (family → genus → Japanese common name); it repeats in every garden this trip.</p></div>
+      <div><div class="eyebrow r">If it rains</div><p>Swap Happō-en for the Nezu Museum (Omotesandō, closed Mon): Kengo Kuma building, then a valley garden of tea houses and stone lanterns under maples. Timed tickets, ¥1,300–1,500.</p></div>
+    </div>
+  </div>
+</article>
+
+<!-- DAY 2 -->
+<article class="day" id="d2">
+  <div class="num"><span class="k kanji">二</span><span class="d">Fri 20 Nov</span></div>
+  <div>
+    <div class="day-head reveal">
+      <div class="city"><h3 class="display">West Tokyo: the nursery run</h3><span class="cityname">Tokyo</span></div>
+      <p class="thread">Japan's plant retail is a subject in itself. Today strings together the country's biggest garden centre, a botanical garden mid-chrysanthemum-show, and a legendary cactus dealer's rooftop shop — all on the Seibu and Keiō lines out west.</p>
+      <div class="wx"><span><b>Optional dawn</b> Ōta Wholesale Flower Market, auction from 7:00 (open Fri; free visitor route from 5:00) — only for the truly keen; it's on the far south side.</span></div>
+    </div>
+    <!--IMG:jindai|Jindai Botanical Gardens, Chōfu: the formal rose terraces below the greenhouse — the autumn flush is still on in mid-November.-->
+    <div class="stops reveal">
+      <div class="stop"><div class="t">9:00<small>2 h</small></div><div><h4>Ozaki Flower Park <span class="jp">オザキフラワーパーク</span></h4><p>One of Japan's largest garden centres — 100,000+ lines across floors of houseplants and rare foliage, cactus &amp; succulents, agave and caudex, orchids, tools and pottery, plus Growers Café. Go at opening on a weekday and it's yours.</p><div class="meta"><span>Daily 9:00–19:00</span><span>Free</span><span>Musashi-seki (Seibu Shinjuku line) 10 min walk</span></div><div class="tags"><span class="tag nursery">Nursery</span><span class="tag exotic">Exotics</span></div></div></div>
+      <div class="stop"><div class="t">12:00<small>3 h</small></div><div><h4>Jindai Botanical Gardens + Chrysanthemum Show <span class="jp">神代植物公園</span></h4><p>Tokyo's largest rose garden (~400 varieties, autumn flush still on), a big modern greenhouse — begonias, orchids, giant water lilies, cacti — and the annual chrysanthemum show (runs to ~24 Nov): ōzukuri thousand-bloom plants, kengai cascades trained like waterfalls, the “Jindai flower carriage”. Lunch is soba at Jindai-ji temple next door.</p><div class="meta"><span>9:30–17:00, last entry 16:00 · closed Mon</span><span>¥500 incl. greenhouse</span><span>Bus from Chōfu (Keiō) or Kichijōji (JR)</span></div><div class="tags"><span class="tag garden">Garden</span><span class="tag exotic">Exotics</span></div></div></div>
+      <div class="stop"><div class="t">16:30<small>1 h</small></div><div><h4>Kakusen-en rooftop, Seibu Ikebukuro 9F <span class="jp">鶴仙園</span></h4><p>The city-centre branch of Tokyo's most respected cactus &amp; succulent specialist — Haworthia, Astrophytum, mesembs, South African imports. Ikebukuro is straight back down the Seibu line from Ozaki, so it closes the loop.</p><div class="meta"><span>Dept store hours ~10:00–20:00</span><span>Ikebukuro</span></div><div class="tags"><span class="tag nursery">Nursery</span></div></div></div>
+      <div class="stop"><div class="t">18:30</div><div><h4>Ikebukuro or Shinjuku dinner</h4><p>Ikebukuro's Sunshine City area often hosts weekend plant events in November — glance at the notice boards.</p></div></div>
+    </div>
+    <div class="eye reveal">
+      <div><div class="eyebrow g">Gardener's eye</div><p>The kengai (cascade) chrysanthemums are single plants trained over months on wire frames — pinching, tying and disbudding schedules are usually posted beside them. Photograph the frames as much as the flowers.</p></div>
+      <div><div class="eyebrow b">Buying</div><p>Live plants almost certainly can't come home (see “Bringing it home”). Buy pots, Japanese steel tools (hasami), labels, akadama, kanuma and books instead — Ozaki has all of it.</p></div>
+    </div>
+  </div>
+</article>
+
+<!-- DAY 3 -->
+<article class="day" id="d3">
+  <div class="num"><span class="k kanji">三</span><span class="d">Sat 21 Nov</span></div>
+  <div>
+    <div class="day-head reveal">
+      <div class="city"><h3 class="display">Ōmiya bonsai village, then the oldest garden in Japan</h3><span class="cityname">Saitama · Tokyo</span></div>
+      <p class="thread">Bonsai in the morning where the craft's great families work; a 340-year-old physic garden in the afternoon; and Rikugien's maples — plus its neighbour, Kakusen-en's main nursery — as the light goes.</p>
+      <div class="wx"><span><b>Note</b> Ōmiya nurseries and museum close Thursdays — Saturday is safe.</span></div>
+    </div>
+    <!--IMG:rikugien|Rikugien in late November — an Edo stroll garden of ~400 maples, ten minutes from Kakusen-en’s cactus nursery.-->
+    <div class="stops reveal">
+      <div class="stop"><div class="t">9:00<small>3.5 h</small></div><div><h4>Ōmiya Bonsai Village <span class="jp">大宮盆栽村</span></h4><p>Start at the Ōmiya Bonsai Art Museum (English audio guide; photos only in marked outdoor spots), then walk the lanes between the private nurseries: Seikō-en (Yamada family), Fuyō-en (deciduous specialists), Mansei-en (the Katō family who founded the village in 1925), Kyūka-en (grows from seed). All free to enter. Quiet streets, don't touch, ask before photographing; small tools, pots and shohin are for sale.</p><div class="meta"><span>Museum 9:00–16:00 · ¥310 · closed Thu</span><span>Nurseries ~9:00–16:30</span><span>Toro stn (JR Utsunomiya line), ~40 min from Ueno</span></div><div class="tags"><span class="tag nursery">Bonsai</span><span class="tag garden">Museum</span></div><!--FIG:omiya|A black pine in the Ōmiya Bonsai Art Museum’s outdoor court — the trees are rotated with the seasons.--></div></div>
+      <div class="stop"><div class="t">13:30<small>1.5 h</small></div><div><h4>Koishikawa Botanical Garden <span class="jp">小石川植物園</span></h4><p>The University of Tokyo's garden, founded 1684 as the shogunate's medicinal herb garden. Newton's apple (a graft), Mendel's grape vine, the ginkgo from which Hirase discovered motile sperm in 1896, a Chinese ginkgo alley now gold, camellias, and a small glasshouse of Ogasawara and Ryūkyū natives.</p><div class="meta"><span>9:00–16:30 · closed Mon</span><span>¥500</span><span>Hakusan (Mita) / Myōgadani (Marunouchi)</span></div><div class="tags"><span class="tag garden">Garden</span></div><!--FIG:koishikawa|Koishikawa’s maple avenue — Japan’s oldest botanical garden, planted as a physic garden in 1684.--></div></div>
+      <div class="stop"><div class="t">15:30<small>45 min</small></div><div><h4>Kakusen-en main nursery, Komagome <span class="jp">鶴仙園 駒込本店</span></h4><p>The original shop, two minutes from Rikugien's gate. Deeper stock than the rooftop branch — the place to talk Haworthia genetics with people who import them.</p><div class="meta"><span>10:00–17:00 daily</span><span>Komagome (JR Yamanote)</span></div><div class="tags"><span class="tag nursery">Nursery</span></div></div></div>
+      <div class="stop"><div class="t">16:15<small>→ dusk</small></div><div><h4>Rikugien <span class="jp">六義園</span></h4><p>An Edo-period stroll garden of ~400 maples, built around 88 scenes from classical poetry. Colour peaks here late Nov–early Dec. If the 2026 illumination has started (2025: 22 Nov–5 Dec), stay for it — otherwise you'll be back on Sat 28.</p><div class="meta"><span>9:00–17:00 · ¥300</span><span>Illumination 18:00–20:30, ¥900 online adv.</span></div><div class="tags"><span class="tag garden">Garden</span><span class="tag night">Night</span></div></div></div>
+    </div>
+    <div class="eye reveal">
+      <div><div class="eyebrow g">Gardener's eye</div><p>At Ōmiya watch for kanuma vs akadama in the pots, wire gauge on deciduous vs pines, and how many trees are “resting” unstyled — the village is a working place, not a show.</p></div>
+      <div><div class="eyebrow r">Alternative</div><p>Shunkaen Bonsai Museum (Kunio Kobayashi, Edogawa; ~¥1,000, closed Mon) — 1,000+ trees including a 1,000-year black pine, and apprentices who explain in English. Trade Koishikawa for it if bonsai is the priority.</p></div>
+    </div>
+  </div>
+</article>
+
+<!-- DAY 4 -->
+<article class="day" id="d4">
+  <div class="num"><span class="k kanji">四</span><span class="d">Sun 22 Nov</span></div>
+  <div>
+    <div class="day-head reveal">
+      <div class="city"><h3 class="display">To Kyoto — bonsai show, Meiji masterpiece, maples by lantern</h3><span class="cityname">Tokyo → Kyoto</span></div>
+      <p class="thread">Early Nozomi west. Everything today sits in one walkable Okazaki–Higashiyama cluster: the Taikan-ten exhibition hall, Ueji's Murin-an five minutes away, and Eikandō's 3,000 lit maples after dark.</p>
+      <div class="wx"><span><b>Kyoto Nov</b> 16°C / 6°C · driest month · cold mornings</span><span><b>Colour</b> Higashiyama ~20 Nov–early Dec — you're in the window</span></div>
+    </div>
+    <!--IMG:eikando|Eikandō’s Hōjō pond in November — 3,000 maples, and the reason the temple is nicknamed “Momiji Eikandō”.-->
+    <div class="stops reveal">
+      <div class="stop"><div class="t">7:30<small>2h15</small></div><div><h4>Nozomi, Tokyo → Kyoto <span class="jp">のぞみ</span></h4><p>Reserve via SmartEX. ~¥14,170. Right-hand window (seat E) for Fuji around 40 minutes in. Drop bags at the hotel — Higashiyama side if you can.</p><div class="tags"><span class="tag travel">Transit</span></div></div></div>
+      <div class="stop"><div class="t">11:00<small>2 h</small></div><div><h4>Nihon Bonsai Taikan-ten <span class="jp">日本盆栽大観展</span></h4><p>Japan's great autumn bonsai exhibition at Miyako Messe (dates to confirm; always the Labour-Thanksgiving weekend). Beyond the display hall is the sales floor — trees, antique pots, tools, suiseki stones from dealers across the country. Best bonsai shopping of the whole trip.</p><div class="meta"><span>9:00–16:30 · ¥1,500</span><span>Higashiyama stn (Tōzai line) 8 min</span></div><div class="tags"><span class="tag nursery">Bonsai</span><span class="tag book">Confirm dates</span></div></div></div>
+      <div class="stop"><div class="t">14:00<small>1.5 h</small></div><div><h4>Murin-an <span class="jp">無鄰菴</span></h4><p>Ogawa Jihei VII's 1896 garden for Yamagata Aritomo — the pivot from Edo formality to a naturalistic modern garden: a shallow stream fed from the Lake Biwa canal, open lawn, and Higashiyama borrowed as skyline with pruning kept low so the hills stay in the frame. Sit on the tatami; that's where it was designed to be seen from. Maintained by Ueyakato Landscape, who run gardener-led tours.</p><div class="meta"><span>9:00–17:00 · ¥600 (¥900–1,100 peak days) · timed entry</span><span>Keage stn 5 min</span></div><div class="tags"><span class="tag garden">Garden</span><span class="tag book">Book</span></div><!--FIG:murinan|Murin-an from the main house — the view Ogawa Jihei designed it for: lawn, stream, and Higashiyama borrowed as skyline.--></div></div>
+      <div class="stop"><div class="t">16:00<small>1 h</small></div><div><h4>Nanzen-ji &amp; Konchi-in <span class="jp">南禅寺 · 金地院</span></h4><p>Kobori Enshū's crane-and-turtle karesansui at Konchi-in (¥500, quiet even in peak week), then Nanzen-ji's brick aqueduct and Hōjō “Leaping Tiger” garden (¥600).</p><div class="tags"><span class="tag garden">Garden</span></div></div></div>
+      <div class="stop"><div class="t">19:30<small>night</small></div><div><h4>Eikandō illumination <span class="jp">永観堂</span></h4><p>“Momiji Eikandō” — 3,000 maples around the Hōjō pond lit from 17:30. Queues are worst at opening; arriving 19:30+ halves the wait. Separate ticket from daytime.</p><div class="meta"><span>17:30–21:00 · ¥700</span></div><div class="tags"><span class="tag night">Night</span></div></div></div>
+    </div>
+    <div class="eye reveal">
+      <div><div class="eyebrow g">Gardener's eye</div><p>At Murin-an compare the stream's engineered “naturalness” — gravel bed, riffle stones, deliberate meander — with the canal it draws from. Note how the lawn is mown to different heights near and far to exaggerate depth.</p></div>
+      <div><div class="eyebrow r">Crowd rule</div><p>Kyoto's last-week-of-November weekends are the busiest days of the year. Temples empty out before 9:00 and after 15:30; the plan leans on both edges of the day.</p></div>
+    </div>
+  </div>
+</article>
+
+<!-- DAY 5 -->
+<article class="day" id="d5">
+  <div class="num"><span class="k kanji">五</span><span class="d">Mon 23 Nov</span></div>
+  <div>
+    <div class="day-head reveal">
+      <div class="city"><h3 class="display">Shigemori's checkerboard, a shohin master, a rainforest under glass</h3><span class="cityname">Kyoto</span></div>
+      <p class="thread">A public holiday (Labour Thanksgiving) — so the day is engineered around a reserved dawn entry, a small private nursery, and a huge conservatory that swallows crowds. Bonus: it's the last day of Taikan-ten if you want a second pass.</p>
+    </div>
+    <!--IMG:tofukuji|Tōfuku-ji’s Tsūtenkyō bridge above the maple valley — reserved 7:30 entry gets Sam onto it before the holiday crowds.-->
+    <div class="stops reveal">
+      <div class="stop"><div class="t">7:30<small>2 h</small></div><div><h4>Tōfuku-ji — Tsūtenkyō &amp; the Hōjō gardens <span class="jp">東福寺</span></h4><p>Reserved early entry (7:30–8:30) onto the Tsūtenkyō bridge above a valley of 2,000 maples — many of them the trident maple with three-lobed golden leaves. Then Shigemori Mirei's 1939 Hōjō gardens: Hōrai stone peaks on gravel to the south, and the north garden's moss-and-stone checkerboard dissolving into ground — the single most influential modernist garden in Japan.</p><div class="meta"><span>Early entry by reservation · autumn ticket ¥1,000 + Hōjō ¥500</span><span>Tōfukuji stn (JR/Keihan)</span></div><div class="tags"><span class="tag garden">Garden</span><span class="tag book">Book</span></div></div></div>
+      <div class="stop"><div class="t">10:00<small>1 h</small></div><div><h4>Kōju-en shohin nursery <span class="jp">光樹園</span></h4><p>Tomohiro Masumi's small-bonsai nursery in Karahashi, a 15-minute walk west of Kyoto station. Visitors welcome; the trees are palm-sized and the pots exquisite.</p><div class="meta"><span>~9:00–17:00</span><span>Free</span></div><div class="tags"><span class="tag nursery">Bonsai</span></div></div></div>
+      <div class="stop"><div class="t">12:30<small>3 h</small></div><div><h4>Kyoto Botanical Garden &amp; conservatory <span class="jp">京都府立植物園</span></h4><p>Japan's oldest public botanical garden (1924), 24 ha, ~12,000 taxa. The 48 m conservatory runs rainforest → jungle → orchids and bromeliads → savanna and succulents → a cooled alpine room → a night-flower room; Amorphophallus, cycads and carnivorous plants along the way. Outside: camellia grove, bamboo garden, conifer collection and the maple avenue along the Kamo river.</p><div class="meta"><span>9:00–17:00, conservatory 10:00–16:00</span><span>¥500 all-in</span><span>Kitayama stn (Karasuma line)</span></div><div class="tags"><span class="tag exotic">Exotics</span><span class="tag garden">Garden</span></div><!--FIG:kyotobg|The Kyoto Botanical Garden conservatory — 4,500 species from rainforest to a cooled alpine room.--></div></div>
+      <div class="stop"><div class="t">16:30<small>optional</small></div><div><h4>Kamo river walk south → Demachiyanagi</h4><p>Ginkgo and maple along the banks; a bath, then dinner. Tomorrow needs you at Katsura by 9:00.</p></div></div>
+    </div>
+    <div class="eye reveal">
+      <div><div class="eyebrow g">Gardener's eye</div><p>Tōfuku-ji's north garden: the checkerboard is moss (Polytrichum) against square paving, and the squares are allowed to “fail” towards the edge on purpose. It's a lesson in designing decay.</p></div>
+      <div><div class="eyebrow r">If it rains</div><p>Rain suits both Tōfuku-ji moss and the conservatory. Drop Kōju-en and add Kōmyō-in (another Shigemori garden beside Tōfuku-ji, ¥500, nearly empty).</p></div>
+    </div>
+  </div>
+</article>
+
+<!-- DAY 6 -->
+<article class="day" id="d6">
+  <div class="num"><span class="k kanji">六</span><span class="d">Tue 24 Nov</span></div>
+  <div>
+    <div class="day-head reveal">
+      <div class="city"><h3 class="display">Katsura and the moss temple</h3><span class="cityname">Kyoto west</span></div>
+      <p class="thread">The two most-booked gardens in Japan, conveniently neighbours across the Katsura river. This is the day the booking clock exists for.</p>
+    </div>
+    <!--IMG:saihoji|Saihō-ji — Kokedera — around 120 species of moss under maples; November is its best fortnight.-->
+    <div class="stops reveal">
+      <div class="stop"><div class="t">9:20<small>1 h</small></div><div><h4>Katsura Imperial Villa <span class="jp">桂離宮</span></h4><p>The gold standard of the stroll garden (17th c.): a choreographed sequence of hide-and-reveal, stepping-stone rhythms that slow or hurry your feet, the Shōkintei teahouse, and the pebble spit modelled on Ama-no-hashidate. English-guided tour, ~60 min.</p><div class="meta"><span>¥1,000 · closed Mon · age 12+</span><span>Hankyū Katsura stn 15 min walk</span></div><div class="tags"><span class="tag garden">Garden</span><span class="tag book">Booked</span></div><!--FIG:katsura|Katsura Imperial Villa: the pond seen across clipped pines and the stepping-stone shore.--></div></div>
+      <div class="stop"><div class="t">11:00<small>lunch</small></div><div><h4>Katsura → Matsuo</h4><p>Bus or a short taxi north along the river. Eat near Matsuo Taisha; the shrine's own garden (Shigemori Mirei's last work, 1975) is worth the ¥500 if you have 30 minutes.</p><div class="tags"><span class="tag garden">Garden</span></div></div></div>
+      <div class="stop"><div class="t">13:00<small>2 h</small></div><div><h4>Saihō-ji — Kokedera, the moss temple <span class="jp">西芳寺 苔寺</span></h4><p>Musō Soseki's 1339 garden around the Golden Pond, carpeted in ~120 moss species; the upper dry cascade is the prototype of every karesansui after it. Sutra copying first (~20 min), then 60–90 minutes in the garden. Late November's maple-on-moss is its best fortnight; better still after rain.</p><div class="meta"><span>Reservation only · ¥4,000</span><span>Bus 73/83 or taxi</span></div><div class="tags"><span class="tag garden">Garden</span><span class="tag book">Booked</span></div></div></div>
+      <div class="stop"><div class="t">16:00<small>1 h</small></div><div><h4>Arashiyama, late — Ōkōchi Sansō <span class="jp">大河内山荘</span></h4><p>Taxi 15 min. At the top of the bamboo grove, a 1930s film actor's hillside estate: clipped pines, moss, views over the Hozu gorge to Hiei-zan. ¥1,000 including matcha. The bamboo grove at dusk is finally empty.</p><div class="meta"><span>9:00–17:00</span></div><div class="tags"><span class="tag garden">Garden</span></div></div></div>
+      <div class="stop"><div class="t">20:30<small>night</small></div><div><h4>Kōdai-ji illumination <span class="jp">高台寺</span></h4><p>Gion. Pond garden and bamboo lit until 22:00, with a projection over the karesansui. Late is quiet.</p><div class="meta"><span>To 22:00 · ¥600</span></div><div class="tags"><span class="tag night">Night</span></div><!--FIG:kodaiji|Kōdai-ji’s pond garden in autumn colour, before the lanterns come on.--></div></div>
+    </div>
+    <div class="eye reveal">
+      <div><div class="eyebrow g">Gardener's eye</div><p>Kokedera's moss isn't planted — it colonised after the garden fell into neglect and was then kept. Watch how gardeners sweep with bamboo brooms without lifting it, and how paths sit a few centimetres proud of the moss to shed water.</p></div>
+      <div><div class="eyebrow b">If the lottery fails</div><p>Katsura: queue at the gate from 8:40 for same-day tickets. Kokedera: no alternative — substitute Gio-ji (Arashiyama, tiny moss garden, ¥300) plus Hōgon-in (autumn-only, moss under maples).</p></div>
+    </div>
+  </div>
+</article>
+
+<!-- DAY 7 -->
+<article class="day" id="d7">
+  <div class="num"><span class="k kanji">七</span><span class="d">Wed 25 Nov</span></div>
+  <div>
+    <div class="day-head reveal">
+      <div class="city"><h3 class="display">Fifteen stones, a plant market, and the Daitoku-ji sub-temples</h3><span class="cityname">Kyoto north-west</span></div>
+      <p class="thread">The 25th is Tenjin-san — Kitano Tenmangū's monthly flea market, where the plant and bonsai stalls open before dawn. It anchors a north-west day of dry gardens: Ryōan-ji at opening, then Daitoku-ji's cluster including Shigemori's Zuihō-in.</p>
+    </div>
+    <!--IMG:ryoanji|Ryōan-ji at the end of November — fifteen stones, raked gravel, and the maples over the oil-earth wall.-->
+    <div class="stops reveal">
+      <div class="stop"><div class="t">8:00<small>1 h</small></div><div><h4>Ryōan-ji at the bell <span class="jp">龍安寺</span></h4><p>Fifteen stones in five groups on raked gravel; from no seat can you see all fifteen. Study the ochre oil-earth wall (tsuijibei) — its patina is half the composition — and the asymmetric triangulation. Then the Kyōyōchi pond garden below and the camellias on the west side. The verandah fills by 9:30.</p><div class="meta"><span>8:00–17:00 · ¥600</span><span>Bus to Ryōanji-mae / Randen Ryōanji stn</span></div><div class="tags"><span class="tag garden">Garden</span></div></div></div>
+      <div class="stop"><div class="t">9:30<small>1.5 h</small></div><div><h4>Kitano Tenmangū — Tenjin-san market &amp; momiji-en <span class="jp">北野天満宮 天神市</span></h4><p>Hundreds of stalls; look for the ueki-ya rows selling shohin, rooted cuttings, orchids, kokedama, old tools and pots. Then the momiji-en: 350 maples along the Odoi embankment above the Kamiya river, ¥1,000 including tea and a sweet.</p><div class="meta"><span>Market ~6:00–16:00 · momiji-en ~9:00–16:00, lit till 20:00</span><span>Bus 50/101 Kitano-Tenmangū-mae</span></div><div class="tags"><span class="tag nursery">Market</span><span class="tag garden">Garden</span></div><!--FIG:kitano|Kitano Tenmangū’s momiji-en — 350 maples along the old Odoi embankment.--></div></div>
+      <div class="stop"><div class="t">12:00<small>2.5 h</small></div><div><h4>Daitoku-ji sub-temples <span class="jp">大徳寺</span></h4><p>Walk 20 min north. <b>Zuihō-in</b> (¥400): Shigemori Mirei, 1961 — the Dokuza-tei's raked “waves” breaking on a rock peninsula, and the hidden-cross garden; usually empty. <b>Daisen-in</b> (¥500, no photos): c.1509, a mountain stream told in stone, narrowing to an ocean of gravel round an L-shaped court. <b>Kōtō-in</b> (¥500): the maple-lined approach and a single-lantern moss garden — verify it's open after renovation. Lunch is shōjin-ryōri (temple vegetarian) at Izusen inside the grounds.</p><div class="meta"><span>Mostly 9:00–17:00</span><span>Bus 205/206 Daitokuji-mae</span></div><div class="tags"><span class="tag garden">Garden</span></div><!--FIG:zuihoin|Zuihō-in, Daitoku-ji: Shigemori Mirei’s 1961 Dokuza-tei — waves of raked gravel breaking against a stone peninsula.--></div></div>
+      <div class="stop"><div class="t">15:30<small>1.5 h</small></div><div><h4>Shisen-dō, Ichijōji <span class="jp">詩仙堂</span></h4><p>Bus 5 across town. Ishikawa Jōzan's 1641 hermitage: an upper terrace of white sand and a “sea” of clipped satsuki azalea (karikomi — the mass-pruning to study), a lower stroll garden, brilliant maples, and the original shishi-odoshi water clacker. Small; go now, not at 11.</p><div class="meta"><span>9:00–17:00 · ¥700</span></div><div class="tags"><span class="tag garden">Garden</span></div><!--FIG:shisendo|Shisen-dō — the clipped satsuki “sea” (karikomi) with maples above it, seen from the hermitage veranda.--></div></div>
+      <div class="stop"><div class="t">17:15<small>optional</small></div><div><h4>Enkō-ji or Kitano momiji-en light-up</h4><p>Enkō-ji is a five-minute walk (Jūgyū-no-niwa maples, ¥600 in autumn, sometimes with a night opening); or bus back to Kitano for the lit embankment.</p><div class="tags"><span class="tag night">Night</span></div></div></div>
+    </div>
+    <div class="eye reveal">
+      <div><div class="eyebrow g">Gardener's eye</div><p>Karikomi at Shisen-dō: the azaleas are sheared as one undulating mass rather than as individual shrubs. Look for the layered clipping lines and how the mounds are pruned to hold snow later in the year.</p></div>
+      <div><div class="eyebrow r">Timing</div><p>If Ryōan-ji at 8:00 and the market clash, choose the market: Ryōan-ji is open all week, Tenjin-san happens once.</p></div>
+    </div>
+  </div>
+</article>
+
+<!-- DAY 8 -->
+<article class="day" id="d8">
+  <div class="num"><span class="k kanji">八</span><span class="d">Thu 26 Nov</span></div>
+  <div>
+    <div class="day-head reveal">
+      <div class="city"><h3 class="display">Arashiyama at opening, Ginkaku-ji at closing</h3><span class="cityname">Kyoto west → east</span></div>
+      <p class="thread">Two of Kyoto's most crowded places, each taken at the only hour it's calm. Between them, the Philosopher's Path under maples.</p>
+    </div>
+    <!--IMG:tenryuji|Tenryū-ji’s Sōgenchi pond with Arashiyama borrowed behind it — Musō Soseki’s 14th-century composition, unchanged.-->
+    <div class="stops reveal">
+      <div class="stop"><div class="t">8:30<small>1.5 h</small></div><div><h4>Tenryū-ji via the north gate <span class="jp">天龍寺</span></h4><p>Enter from the bamboo-grove side the minute it opens and you get the Sōgenchi pond — Musō Soseki's garden borrowing Arashiyama and Kameyama as backdrop, dry waterfall and carp stone — before the coaches. Then walk the bamboo grove while it's still quiet.</p><div class="meta"><span>8:30–17:00 · garden ¥500</span><span>JR Saga-Arashiyama / Randen</span></div><div class="tags"><span class="tag garden">Garden</span></div><!--FIG:arashiyama|The Arashiyama grove — mōsō bamboo, thinned and managed, empty only at 8:30 and dusk.--></div></div>
+      <div class="stop"><div class="t">10:15<small>1 h</small></div><div><h4>Gio-ji &amp; Jōjakkō-ji <span class="jp">祇王寺 · 常寂光寺</span></h4><p>A tiny thatched nunnery in a moss garden (¥300), then Jōjakkō-ji's maples on the hillside — the two best small gardens beyond the grove.</p><div class="tags"><span class="tag garden">Garden</span></div></div></div>
+      <div class="stop"><div class="t">12:30<small>lunch</small></div><div><h4>Cross town on the Randen → Demachiyanagi</h4><p>Or Hankyū to Kawaramachi. Yudōfu (tofu hot-pot) is the Arashiyama lunch; near Ginkaku-ji it's soba on the path.</p><div class="tags"><span class="tag travel">Transit</span></div></div></div>
+      <div class="stop"><div class="t">14:15<small>1.5 h</small></div><div><h4>Hōnen-in → Philosopher's Path <span class="jp">法然院 · 哲学の道</span></h4><p>Hōnen-in (free): mossy thatched gate, two raked sand mounds re-patterned by monks every few days. Then north along the canal path under maples.</p><div class="tags"><span class="tag garden">Garden</span></div></div></div>
+      <div class="stop"><div class="t">16:00<small>1 h</small></div><div><h4>Ginkaku-ji in the last hour <span class="jp">銀閣寺</span></h4><p>The Ginshadan sea of raked sand and Kōgetsudai cone — sand as sculpture — a pond garden with a hill path, borrowed Higashiyama, and a small “specimen bed” of native mosses ranked by desirability. The camellia hedge on the approach is a pruning study on its own.</p><div class="meta"><span>8:30–17:00 · ¥500</span></div><div class="tags"><span class="tag garden">Garden</span></div><!--FIG:ginkakuji|Ginkaku-ji’s Ginshadan sand sea, re-raked by hand, with Higashiyama turning behind it.--></div></div>
+      <div class="stop"><div class="t">19:00</div><div><h4>Last Kyoto dinner · pack for the north</h4><p>Forward the suitcase to Tokyo tonight (¥2,000–2,600, next day) and travel to Kanazawa with a rucksack.</p></div></div>
+    </div>
+    <div class="eye reveal">
+      <div><div class="eyebrow g">Gardener's eye</div><p>Ginkaku-ji's moss bed labels mosses “important”, “interfering”, “very important” — an unusually candid statement of what a Japanese gardener is actually selecting for.</p></div>
+      <div><div class="eyebrow b">Swap day</div><p>If you'd rather see Nara: Isuien (¥1,200, closed Tue) is a textbook of shakkei — Tōdai-ji's gate roof and the Kasuga hills pulled into the garden — with Yoshikien's moss garden next door (free with a foreign passport). 45 min by Kintetsu.</p></div>
+    </div>
+  </div>
+</article>
+
+<!-- DAY 9 -->
+<article class="day" id="d9">
+  <div class="num"><span class="k kanji">九</span><span class="d">Fri 27 Nov</span></div>
+  <div>
+    <div class="day-head reveal">
+      <div class="city"><h3 class="display">Over the mountains: pines under rope</h3><span class="cityname">Kyoto → Kanazawa</span></div>
+      <p class="thread">Kanazawa's Kenroku-en is where you see yukitsuri — the conical rope rigging that holds pine branches against Sea of Japan snow — freshly installed. Friday brings the castle garden's light-and-sound night too.</p>
+      <div class="wx"><span><b>Kanazawa Nov</b> 14°C / 8°C · 15–20 rain days · thunder squalls (“buri-okoshi”)</span><span><b>Pack</b> proper waterproof + umbrella from a konbini</span></div>
+    </div>
+    <!--IMG:kenrokuen|Kenroku-en’s pines under yukitsuri — the rope cones go up from 1 November and stay until March.-->
+    <div class="stops reveal">
+      <div class="stop"><div class="t">9:00<small>2h10</small></div><div><h4>Thunderbird → Tsuruga → Tsurugi Shinkansen <span class="jp">サンダーバード · つるぎ</span></h4><p>Cross-platform change at Tsuruga; ~¥9,300 reserved. Arrive ~11:15, hotel near Kōrinbō or the station.</p><div class="tags"><span class="tag travel">Transit</span></div></div></div>
+      <div class="stop"><div class="t">12:30<small>1 h</small></div><div><h4>Ōmichō market lunch <span class="jp">近江町市場</span></h4><p>Snow-crab season opened this month; a kaisen-don at a counter is the Kanazawa lunch.</p></div></div>
+      <div class="stop"><div class="t">14:00<small>2.5 h</small></div><div><h4>Kenroku-en <span class="jp">兼六園</span></h4><p>One of the “three great gardens”. Yukitsuri went up from 1 Nov starting with the Karasaki pine; crews are still rigging trees this week. Walk Momiji-dani and Yamazaki-yama for maples, the Kasumi pond and the two-legged Kotoji lantern; watch the gardeners' knots.</p><div class="meta"><span>8:00–17:00 · ¥320</span><span>Bus to Kenrokuen-shita</span></div><div class="tags"><span class="tag garden">Garden</span></div></div></div>
+      <div class="stop"><div class="t">17:30<small>night</small></div><div><h4>Kenroku-en autumn light-up (if running) <span class="jp">兼六園ライトアップ</span></h4><p>2025 ran ~21–30 Nov, 17:30–21:00, free. 2026 dates on visitkanazawa.jp from autumn.</p><div class="tags"><span class="tag night">Night</span></div></div></div>
+      <div class="stop"><div class="t">19:00<small>night</small></div><div><h4>Gyokusen-inmaru garden light-up <span class="jp">玉泉院丸庭園</span></h4><p>Inside Kanazawa Castle Park; Fridays and Saturdays only, sunset–21:00, with a seven-minute light programme on the hour and half-hour. Free.</p><div class="tags"><span class="tag night">Night</span></div></div></div>
+    </div>
+    <div class="eye reveal">
+      <div><div class="eyebrow g">Gardener's eye</div><p>Yukitsuri: a bamboo pole is lashed to the trunk, straw ropes fan from its top to each branch, tied with a knot that can be released in March. Count the ropes on the Karasaki pine (~800). This is structural arboriculture done as sculpture.</p></div>
+      <div><div class="eyebrow r">Rain plan</div><p>Kanazawa rain is a near certainty. Kenroku-en is arguably better wet; the 21st Century Museum and D.T. Suzuki Museum (water-mirror garden — a modern minimalist reference) are dry.</p></div>
+    </div>
+  </div>
+</article>
+
+<!-- DAY 10 -->
+<article class="day" id="d10">
+  <div class="num"><span class="k kanji">十</span><span class="d">Sat 28 Nov</span></div>
+  <div>
+    <div class="day-head reveal">
+      <div class="city"><h3 class="display">Dawn in the garden, samurai courtyards, east to Tokyo</h3><span class="cityname">Kanazawa → Tokyo</span></div>
+      <p class="thread">Kenroku-en opens free at 6:00 for those willing — mist on the pond and nobody there. Then a small perfect samurai garden, and the Hokuriku Shinkansen back to Tokyo for lit maples.</p>
+    </div>
+    <!--IMG:nomura|The Nomura-ke garden in Nagamachi — 400-year-old yamamomo, lanterns and a stream in barely 200 square metres.-->
+    <div class="stops reveal">
+      <div class="stop"><div class="t">6:15<small>1.5 h</small></div><div><h4>Kenroku-en, free dawn entry <span class="jp">兼六園 早朝開園</span></h4><p>Nov–Feb: 6:00–7:45 via the Renchimon and Mayumizaka gates, free; you must be out by 7:45. Then breakfast.</p><div class="tags"><span class="tag garden">Garden</span></div></div></div>
+      <div class="stop"><div class="t">8:30<small>45 min</small></div><div><h4>Nomura-ke samurai residence <span class="jp">野村家</span></h4><p>Nagamachi. A tiny, famous strolling garden with a 400-year-old yamamomo, a stream cut through the house, koi, and a tea room (¥300 matcha). A masterclass in doing a lot in 200 m².</p><div class="meta"><span>8:30–16:30 · ¥550</span></div><div class="tags"><span class="tag garden">Garden</span></div></div></div>
+      <div class="stop"><div class="t">9:45<small>1.5 h</small></div><div><h4>D.T. Suzuki Museum &amp; Higashi Chaya <span class="jp">鈴木大拙館 · ひがし茶屋街</span></h4><p>Taniguchi's water-mirror garden — one still pool, one wall, one tree — then gold-leaf and tea shops in the old geisha district. Buy a small kutani-ware pot.</p></div></div>
+      <div class="stop"><div class="t">12:30<small>2h30</small></div><div><h4>Kagayaki, Kanazawa → Tokyo <span class="jp">かがやき</span></h4><p>~¥14,380 reserved. Left side (seat A/B) for the mountains. Arrive ~15:00; hotel in the north (Komagome / Ueno side) makes tonight easy.</p><div class="tags"><span class="tag travel">Transit</span></div></div></div>
+      <div class="stop"><div class="t">18:00<small>night</small></div><div><h4>Rikugien illumination <span class="jp">六義園</span></h4><p>Tokyo's maples are at peak this week. Advance ticket (¥900). Weekend crowds; enter at 18:00 sharp or after 19:45.</p><div class="tags"><span class="tag night">Night</span><span class="tag book">Book</span></div></div></div>
+    </div>
+    <div class="eye reveal">
+      <div><div class="eyebrow g">Gardener's eye</div><p>Nomura-ke's stream enters under the veranda so you hear it before you see it — sound as a garden material. Note the level changes: the whole garden drops 1.5 m across its width to make the water move.</p></div>
+      <div><div class="eyebrow b">Luggage</div><p>Forward the Kyoto suitcase to tonight’s Tokyo hotel on Thu 26 so it’s waiting; Kanazawa is a rucksack stop.</p></div>
+    </div>
+  </div>
+</article>
+
+<!-- DAY 11 -->
+<article class="day" id="d11">
+  <div class="num"><span class="k kanji">十一</span><span class="d">Sun 29 Nov</span></div>
+  <div>
+    <div class="day-head reveal">
+      <div class="city"><h3 class="display">A tidal garden, then home</h3><span class="cityname">Tokyo → Haneda</span></div>
+      <p class="thread">Departure day. Hama-rikyū sits between the city and the bay, twenty minutes from Haneda by monorail — a last hour among 300-year-old pines before the flight. If the flight is a late one, Kamakura is the bigger prize (below).</p>
+    </div>
+    <!--IMG:hamarikyu|Hama-rikyū’s “300-year pine”, propped and pruned since the Tokugawa shoguns planted it — the last garden of the trip.-->
+    <div class="stops reveal">
+      <div class="stop"><div class="t">9:00<small>1.5 h</small></div><div><h4>Hama-rikyū <span class="jp">浜離宮恩賜庭園</span></h4><p>A shogun’s duck-hunting garden with a seawater pond that rises and falls with the tide, the vast propped “300-year pine”, a peony garden and a teahouse on the water. Ginkgo and maples still in colour.</p><div class="meta"><span>9:00–17:00 · ¥300</span><span>Shiodome / Shimbashi</span></div><div class="tags"><span class="tag garden">Garden</span></div></div></div>
+      <div class="stop"><div class="t">11:00<small>30 min</small></div><div><h4>Shimbashi → Haneda <span class="jp">羽田</span></h4><p>Monorail from Hamamatsuchō (two stops from Shimbashi), ~20 min. If carrying seeds, the Plant Protection Station counter is landside — allow 45 minutes for the phytosanitary certificate.</p><div class="tags"><span class="tag travel">Transit</span></div></div></div>
+      <div class="stop"><div class="t">—<small>late flight?</small></div><div><h4>Kamakura instead <span class="jp">鎌倉</span></h4><p>Only if the flight leaves after ~19:00: JR to Kita-Kamakura by 9:00 for Meigetsuin’s round window and its rear garden (open only late Nov–early Dec, ¥300 + ¥500), Engaku-ji, then Hōkoku-ji’s bamboo grove with matcha (¥400 + ¥600). Kamakura → Haneda is ~1 h 15 by train and bus.</p><div class="tags"><span class="tag garden">Garden</span></div></div></div>
+    </div>
+    <div class="eye reveal">
+      <div><div class="eyebrow g">Gardener's eye</div><p>Hama-rikyū’s pine is held up by dozens of timber crutches (<i>hoedzue</i>) — look at how the props are footed on stone, not soil, and how the crown is thinned so wind passes through rather than lifting it.</p></div>
+      <div><div class="eyebrow r">Left on the table</div><p>Botanize (Daikanyama), The Plant Society (Kiyosumi-Shirakawa) and Solso Park (Aoyama) — the rare-plant shops — didn’t fit. If Sam would rather shop than see one more garden, swap them for Sat 28’s afternoon before Rikugien.</p></div>
+    </div>
+  </div>
+</article>
+
+<!-- FIELD GUIDE -->
+<section class="block" id="guide">
+  <div class="block-head reveal">
+    <div class="k kanji">葉</div>
+    <div>
+      <h2 class="display">Field guide to a Japanese November</h2>
+      <p>What's actually performing this month — and the techniques you'll see gardeners doing in real time. Colour bars are the leaf, flower or fruit you're looking for.</p>
+    </div>
+  </div>
+  <h3 class="sub display reveal">Plants</h3>
+  <div class="guide reveal">
+    <article><div class="swatch" style="background:linear-gradient(90deg,#B8412B,#D9A63A)"></div><h4>Japanese maple<span class="jp">紅葉 · 楓</span></h4><div class="latin">Acer palmatum, A. amoenum, A. buergerianum</div><p>The point of the trip. Note how many named cultivars are actually seedling-grown in temple gardens; Tōfuku-ji's “Tsūtenkyō momiji” is a trident maple that turns gold, not red.</p><div class="where">Everywhere; peak Kyoto 20 Nov→</div></article>
+    <article><div class="swatch" style="background:#D9A63A"></div><h4>Ginkgo<span class="jp">銀杏</span></h4><div class="latin">Ginkgo biloba</div><p>Peaks a week before the maples. Koishikawa's tree is where motile sperm was found in 1896.</p><div class="where">Koishikawa · Kenroku-en · Kamo river</div></article>
+    <article><div class="swatch" style="background:#5F7A4A"></div><h4>Black &amp; white pine<span class="jp">黒松 · 五葉松</span></h4><div class="latin">Pinus thunbergii, P. parviflora</div><p>The bones of every garden. Watch for momiage — hand-plucking of old needles — which happens right now, and yukitsuri rigging in Kanazawa.</p><div class="where">Kenroku-en · Ōmiya · Ritsurin</div></article>
+    <article><div class="swatch" style="background:#8FA97A"></div><h4>Moss<span class="jp">苔</span></h4><div class="latin">Polytrichum, Leucobryum, Racomitrium</div><p>Kokedera holds ~120 species. Ginkaku-ji ranks them by usefulness. It is swept, weeded and watered — never “left”.</p><div class="where">Saihō-ji · Tōfuku-ji · Gio-ji</div></article>
+    <article><div class="swatch" style="background:#E4B7AA"></div><h4>Sasanqua camellia<span class="jp">山茶花</span></h4><div class="latin">Camellia sasanqua</div><p>The one thing in full flower in November — pink and white in hedges everywhere; petals fall singly, unlike japonica.</p><div class="where">Temple hedges · Kyoto Botanical Garden</div></article>
+    <article><div class="swatch" style="background:#D9A63A"></div><h4>Leopard plant<span class="jp">石蕗</span></h4><div class="latin">Farfugium japonicum</div><p>Glossy rounded leaves and yellow daisies in Nov — the shade-groundcover of the tea garden. Look for variegated forms in nurseries.</p><div class="where">Tsubo-niwa · roji tea paths</div></article>
+    <article><div class="swatch" style="background:#B8412B"></div><h4>Nandina<span class="jp">南天</span></h4><div class="latin">Nandina domestica</div><p>Red berries and reddening leaves; planted by doors as a charm against misfortune (nan-ten: “difficulty-turning”).</p><div class="where">Entrances everywhere</div></article>
+    <article><div class="swatch" style="background:#C97A2A"></div><h4>Persimmon<span class="jp">柿</span></h4><div class="latin">Diospyros kaki</div><p>Bare trees hung with orange fruit, and strings of drying hoshigaki under eaves in Ohara and Arashiyama.</p><div class="where">Farmhouses · Nara</div></article>
+    <article><div class="swatch" style="background:#5F7A4A"></div><h4>Satsuki azalea<span class="jp">皐月</span></h4><div class="latin">Rhododendron indicum</div><p>Not in flower — but the sheared karikomi mounds are the November lesson. Shisen-dō and Shugakuin's giant hedge-dam are the references.</p><div class="where">Shisen-dō · Kōdai-ji · Ritsurin</div></article>
+    <article><div class="swatch" style="background:#8FA97A"></div><h4>Cycad<span class="jp">蘇鉄</span></h4><div class="latin">Cycas revoluta</div><p>Native to Kyūshū and the Ryūkyūs; in Kyoto they'll be being wrapped in straw for winter (komo-maki) — worth photographing.</p><div class="where">Nijō-jō · Kyoto Botanical · Sakuya Konohana</div></article>
+    <article><div class="swatch" style="background:#2F4058"></div><h4>Ogasawara endemics<span class="jp">小笠原</span></h4><div class="latin">Pandanus boninensis, Ochrosia nakaiana …</div><p>Japan's Galápagos. Shinjuku Gyoen, Koishikawa and Yumenoshima all keep native corners of these island plants.</p><div class="where">Shinjuku Gyoen greenhouse</div></article>
+    <article><div class="swatch" style="background:#D9A63A"></div><h4>Chrysanthemum<span class="jp">菊</span></h4><div class="latin">Chrysanthemum × morifolium</div><p>Show season. Ōzukuri (hundreds of blooms on one plant), kengai cascades, and the classical Edo/Saga/Ise types with their strange petals.</p><div class="where">Jindai to 24 Nov</div></article>
+  </div>
+
+  <div class="two reveal" style="margin-top:3.5rem">
+    <div>
+      <h3 class="sub display">Techniques to watch for</h3>
+      <ul class="list">
+        <li><span class="term">借景</span><p><span class="rom">shakkei</span>Borrowed scenery — a hill or roof captured as part of the composition. Murin-an, Isuien, Tenryū-ji.</p></li>
+        <li><span class="term">枯山水</span><p><span class="rom">karesansui</span>Dry landscape of gravel, stone and moss. Ryōan-ji, Daisen-in, Zuihō-in, Tōfuku-ji.</p></li>
+        <li><span class="term">刈込</span><p><span class="rom">karikomi</span>Mass shearing of azalea and box into landforms. Shisen-dō, Shugakuin.</p></li>
+        <li><span class="term">雪吊り</span><p><span class="rom">yukitsuri</span>Rope-and-pole rigging against snow load. Kenroku-en from 1 Nov.</p></li>
+        <li><span class="term">菰巻き</span><p><span class="rom">komo-maki</span>Straw belts wrapped round pines and cycads for winter — traditionally to trap insects. Goes on now.</p></li>
+        <li><span class="term">飛石</span><p><span class="rom">tobi-ishi</span>Stepping stones set to slow or hurry the walker. Katsura is the textbook.</p></li>
+        <li><span class="term">坪庭</span><p><span class="rom">tsubo-niwa</span>Courtyard garden of a few square metres. Every machiya and ryokan.</p></li>
+        <li><span class="term">揉み上げ</span><p><span class="rom">momiage</span>Hand-plucking old pine needles in autumn to open the canopy. Watch gardeners on ladders.</p></li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="sub display">Reserve list — if a day opens up</h3>
+      <ul class="list">
+        <li><span class="term">修学院</span><p><span class="rom">Shugakuin Imperial Villa</span>Terraced hillside villa; the upper pond dammed behind a colossal clipped hedge. Free, book like Katsura, age 18+.</p></li>
+        <li><span class="term">大原</span><p><span class="rom">Ohara — Sanzen-in</span>Moss and cedar garden with Jizō statues; colour peaks earlier (10–20 Nov). ¥700, 1 h by bus.</p></li>
+        <li><span class="term">咲くや</span><p><span class="rom">Sakuya Konohana Kan, Osaka</span>One of Japan's largest glasshouses: Victoria amazonica, cooled Himalayan house with blue poppy, S. African drylands. ¥500, closed Mon.</p></li>
+        <li><span class="term">夢の島</span><p><span class="rom">Yumenoshima Tropical Dome, Tokyo</span>Three domes heated by the incinerator next door; mangrove, carnivorous plants, Ogasawara dome. ¥250, closed Mon.</p></li>
+        <li><span class="term">春花園</span><p><span class="rom">Shunkaen Bonsai Museum</span>Kunio Kobayashi's collection in Edogawa. Closed Mon.</p></li>
+        <li><span class="term">足立</span><p><span class="rom">Adachi Museum, Shimane</span>Ranked #1 garden in Japan for 20+ years, viewed as a “living painting”. A 6-hour detour — a reason to come back.</p></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- BRINGING IT HOME -->
+<section class="block" id="home">
+  <div class="block-head reveal">
+    <div class="k kanji">帰</div>
+    <div>
+      <h2 class="display">Bringing it home, and getting around</h2>
+      <p>The unglamorous half: what you can legally carry, how the trains price out, and what to say at a nursery counter.</p>
+    </div>
+  </div>
+
+  <div class="notes reveal">
+    <div>
+      <h4>Plants and seeds — the honest position</h4>
+      <ul>
+        <li><b>Japan's side is easy.</b> The Plant Protection Station (MAFF) has export counters at Haneda, Narita and Kansai. Present soil-free plants or seeds with a short form and they issue a free English phytosanitary certificate, usually same day.</li>
+        <li><b>The destination is the problem.</b> UK: most live plants and seeds from non-EU countries need a phytosanitary certificate and IPAFFS pre-notification; woody genera like <i>Acer</i>, <i>Pinus</i> and <i>Prunus</i> carry extra rules or prohibitions. EU: certificate for essentially everything, with a high-risk list banning many woody genera. Australia: BICON permit + certificate + post-entry quarantine. Soil is prohibited almost everywhere.</li>
+        <li><b>Practical rule:</b> seeds of herbaceous species with a certificate are usually feasible; bonsai are a specialist commercial export, not carry-on. Buy tools, pots, kanuma/akadama, books, and take photographs of the plants.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Rail — skip the national pass</h4>
+      <ul>
+        <li>Tokyo→Kyoto Nozomi ~¥14,170 · Kyoto→Kanazawa ~¥9,300 · Kanazawa→Tokyo ~¥14,380 = <b>~¥38,000</b>, well under the ¥50,000 seven-day JR Pass (¥53,000 from 1 Oct 2026). Point-to-point wins.</li>
+        <li>Book on SmartEX (Tōkaidō), e5489 (JR West) and Eki-net (JR East), or all three via Klook. Nozomi isn't covered by the JR Pass anyway.</li>
+        <li>Welcome Suica or Mobile Suica for every metro, bus and konbini in all three cities.</li>
+        <li>Takkyūbin (Yamato) forwards a suitcase hotel-to-hotel overnight for ¥2,000–2,600 — hand it in by early afternoon. Ideal for heavy pots.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Weather &amp; light</h4>
+      <div class="tbl"><table>
+        <thead><tr><th>City</th><th>High / low</th><th>Rain days</th><th>Colour peak</th></tr></thead>
+        <tbody>
+          <tr><td>Tokyo</td><td>17° / 9°</td><td>8–10</td><td>20 Nov – 5 Dec</td></tr>
+          <tr><td>Kyoto</td><td>16° / 6°</td><td>7–8</td><td>18 Nov – early Dec</td></tr>
+          <tr><td>Kanazawa</td><td>14° / 8°</td><td>15–20</td><td>10 – 25 Nov</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:.6rem">Sunset is 16:35–16:50 all trip. Gardens close at 16:00–17:00; the day is short, which is why every morning starts at opening.</p>
+    </div>
+    <div>
+      <h4>Pack for a gardener</h4>
+      <ul>
+        <li>Shoes that come off fast — you'll remove them twenty times a day at temple halls.</li>
+        <li>Thin gloves and a warm layer for 6 a.m. Kenroku-en; a real waterproof for Kanazawa.</li>
+        <li>A small notebook — many gardens ban photography indoors (Daisen-in) or in nurseries.</li>
+        <li>Cash: nurseries, markets and small temples are cash-only. ¥30,000 in hand.</li>
+        <li>Empty space in the bag for pots and tools; a hard case for scissors in hold luggage.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 class="sub display reveal" style="margin-top:3.5rem">Words for a plant shopper</h3>
+  <div class="phrase reveal">
+    <div><span class="jp">これは何ですか？</span><span class="ro">Kore wa nan desu ka?</span><span class="en">What is this?</span></div>
+    <div><span class="jp">これはいくらですか？</span><span class="ro">Kore wa ikura desu ka?</span><span class="en">How much is this?</span></div>
+    <div><span class="jp">見てもいいですか？</span><span class="ro">Mite mo ii desu ka?</span><span class="en">May I look?</span></div>
+    <div><span class="jp">写真を撮ってもいいですか？</span><span class="ro">Shashin o totte mo ii desu ka?</span><span class="en">May I take a photo?</span></div>
+    <div><span class="jp">種はありますか？</span><span class="ro">Tane wa arimasu ka?</span><span class="en">Do you have seeds?</span></div>
+    <div><span class="jp">海外に持ち帰れますか？</span><span class="ro">Kaigai ni mochikaeremasu ka?</span><span class="en">Can I take it abroad?</span></div>
+    <div><span class="jp">植木屋 · 園芸店</span><span class="ro">ueki-ya · engei-ten</span><span class="en">nursery · garden centre</span></div>
+    <div><span class="jp">鉢 · 鋏 · 苗</span><span class="ro">hachi · hasami · nae</span><span class="en">pot · shears · seedling</span></div>
+    <div><span class="jp">松 · 楓 · 苔 · 竹</span><span class="ro">matsu · kaede · koke · take</span><span class="en">pine · maple · moss · bamboo</span></div>
+    <div><span class="jp">庭師</span><span class="ro">niwashi</span><span class="en">gardener — say it with respect; they'll talk.</span></div>
+  </div>
+</section>
+
+<footer>
+  <div class="kanji">一期一会</div>
+  <div>Ichi-go ichi-e — one time, one meeting. Hours, fees and event dates are drawn from 2025–26 published sources; illumination and exhibition dates for 2026 are typically confirmed in September. Verify Taikan-ten, Rikugien, Kenroku-en light-up and Tōfuku-ji early entry before booking flights around them.</div>
+  <div>Built for Sam, heading east in November 2026.</div>
+</footer>
+</main>
+</div>
+
+<script>
+(function(){
+  // theme toggle
+  var root=document.documentElement, btn=document.getElementById('themeBtn');
+  var saved=localStorage.getItem('momiji-theme'); if(saved) root.setAttribute('data-theme',saved);
+  btn.addEventListener('click',function(){
+    var cur=root.getAttribute('data-theme');
+    var sysDark=window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var next = cur ? (cur==='dark'?'light':'dark') : (sysDark?'light':'dark');
+    root.setAttribute('data-theme',next); localStorage.setItem('momiji-theme',next);
+  });
+
+  // booking clock persistence
+  document.querySelectorAll('#clock input').forEach(function(cb){
+    var k='momiji-clock-'+cb.dataset.k;
+    cb.checked=localStorage.getItem(k)==='1';
+    cb.addEventListener('change',function(){localStorage.setItem(k,cb.checked?'1':'0')});
+  });
+
+  // reveal on scroll + nav highlight
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if('IntersectionObserver' in window){
+    var ro=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'});
+    document.querySelectorAll('.reveal').forEach(function(el){ro.observe(el)});
+    var links=[].slice.call(document.querySelectorAll('#daynav a'));
+    var map={}; links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a});
+    var so=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(a){a.classList.remove('on')}); var a=map[e.target.id]; if(a){a.classList.add('on');}}})},{rootMargin:'-30% 0px -60% 0px'});
+    Object.keys(map).forEach(function(id){var el=document.getElementById(id); if(el) so.observe(el)});
+  } else { document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in')}); }
+
+  // drifting maple leaves
+  var c=document.getElementById('leaves'), ctx=c.getContext('2d'), leaves=[], W,H,DPR;
+  function css(n){return getComputedStyle(root).getPropertyValue(n).trim()}
+  function cols(){return [css('--leaf-a'),css('--leaf-b'),css('--leaf-c'),css('--leaf-d')]}
+  function size(){DPR=Math.min(2,window.devicePixelRatio||1); W=c.clientWidth; H=c.clientHeight; c.width=W*DPR; c.height=H*DPR; ctx.setTransform(DPR,0,0,DPR,0,0)}
+  function mk(init){var s=8+Math.random()*12; return {x:Math.random()*W, y:init?Math.random()*H:-30, s:s, r:Math.random()*Math.PI*2, vr:(Math.random()-.5)*.02, vy:.25+Math.random()*.45, vx:(Math.random()-.5)*.3, ph:Math.random()*Math.PI*2, col:Math.floor(Math.random()*4), a:.35+Math.random()*.4}}
+  function leaf(x,y,s,r,color,a){
+    ctx.save(); ctx.translate(x,y); ctx.rotate(r); ctx.globalAlpha=a; ctx.fillStyle=color;
+    ctx.beginPath();
+    // 5-lobed maple: lobes as tapered petals
+    for(var i=0;i<5;i++){var ang=-Math.PI/2+(i-2)*0.62; var L=s*(i===2?1.15:i===1||i===3?1:0.8);
+      ctx.moveTo(0,0); ctx.quadraticCurveTo(Math.cos(ang-.28)*L*.55,Math.sin(ang-.28)*L*.55,Math.cos(ang)*L,Math.sin(ang)*L);
+      ctx.quadraticCurveTo(Math.cos(ang+.28)*L*.55,Math.sin(ang+.28)*L*.55,0,0);}
+    ctx.fill();
+    ctx.strokeStyle=color; ctx.lineWidth=.8; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(0,s*.55); ctx.stroke();
+    ctx.restore();
+  }
+  function draw(){var C=cols(); ctx.clearRect(0,0,W,H); leaves.forEach(function(l){leaf(l.x,l.y,l.s,l.r,C[l.col],l.a)})}
+  function step(){leaves.forEach(function(l){l.ph+=.01; l.x+=l.vx+Math.sin(l.ph)*.35; l.y+=l.vy; l.r+=l.vr; if(l.y>H+30||l.x<-40||l.x>W+40){Object.assign(l,mk(false))}}); draw(); requestAnimationFrame(step)}
+  size(); var n=Math.max(14,Math.min(40,Math.floor(W/40)));
+  for(var i=0;i<n;i++) leaves.push(mk(true));
+  if(reduce){draw()} else {requestAnimationFrame(step)}
+  window.addEventListener('resize',function(){size(); draw()});
+  new MutationObserver(draw).observe(root,{attributes:true,attributeFilter:['data-theme']});
+})();
+</script>
