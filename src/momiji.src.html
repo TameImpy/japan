@@ -160,6 +160,7 @@ section.block{padding:clamp(3rem,7vw,6rem) clamp(1.4rem,5vw,5rem); border-top:1p
 .stop .meta{margin-top:.6rem; font-size:.8rem; color:var(--ink-3); display:flex; gap:.4rem 1.2rem; flex-wrap:wrap}
 .stop .meta span::before{content:"— "; color:var(--line)}
 .stop .meta span:first-child::before{content:""}
+.gbp{color:var(--ink-3); font-size:.92em; white-space:nowrap}
 .stop .tags{margin-top:.5rem}
 @media (max-width:640px){ .stop{grid-template-columns:minmax(0,1fr); gap:.3rem} .stop .t{font-size:1.15rem} }
 
@@ -223,6 +224,27 @@ figcaption .cr{display:block; font-size:.68rem; color:var(--ink-3); letter-spaci
 figcaption .cr a{color:inherit; text-decoration:none; border-bottom:1px solid var(--line)}
 @media (max-width:640px){ .plate img{aspect-ratio:3/2} }
 
+
+/* ---------- Beyond the garden ---------- */
+.cat{margin-top:3rem}
+.cat-head{display:flex; align-items:baseline; gap:.9rem; margin-bottom:1rem}
+.cat-head .k{font-size:1.5rem; line-height:1}
+.cat-head h3{margin:0; font-weight:300; font-size:1.55rem; font-family:'Cormorant',serif}
+.cat-head p{margin:0; color:var(--ink-3); font-size:.88rem}
+.cat-head .k.sumo{color:var(--momiji)} .cat-head .k.tech{color:var(--ai)} .cat-head .k.food{color:var(--kaki)} .cat-head .k.night{color:var(--koke)} .cat-head .k.trip{color:var(--yamabuki)}
+.bc{display:grid; grid-template-columns:repeat(auto-fill,minmax(16rem,1fr)); border-top:1px solid var(--line); border-left:1px solid var(--line); max-width:70rem}
+.bc article{background:var(--paper); padding:1.2rem 1.25rem 1.3rem; display:grid; gap:.4rem; align-content:start; border-right:1px solid var(--line); border-bottom:1px solid var(--line)}
+.bc article:hover{background:var(--paper-2)}
+.bc h4{margin:0; font-weight:500; font-size:1.02rem; line-height:1.3}
+.bc h4 .jp{font-family:'Shippori',serif; font-weight:400; color:var(--ink-3); font-size:.9rem; margin-left:.4rem}
+.bc p{margin:0; font-size:.88rem; color:var(--ink-2)}
+.bc .fits{font-size:.78rem; color:var(--ink); letter-spacing:.02em}
+.bc .fits b{font-weight:500; color:var(--momiji); text-transform:uppercase; font-size:.68rem; letter-spacing:.12em; margin-right:.3rem}
+.bc .meta{font-size:.78rem; color:var(--ink-3); display:flex; gap:.3rem .9rem; flex-wrap:wrap}
+.bc .meta span::before{content:"— "; color:var(--line)} .bc .meta span:first-child::before{content:""}
+.bc article.wide{grid-column:1 / -1}
+.verdict{border-left:2px solid var(--momiji); padding:.2rem 0 .2rem 1rem; max-width:62ch; color:var(--ink-2); font-size:.95rem; margin:0 0 1rem}
+
 /* reveal */
 .reveal{opacity:0; transform:translateY(14px); transition:opacity .7s ease, transform .7s ease}
 .reveal.in{opacity:1; transform:none}
@@ -244,7 +266,7 @@ figcaption .cr a{color:inherit; text-decoration:none; border-bottom:1px solid va
     <a href="#route">路</a>
     <a href="#d1">一</a><a href="#d2">二</a><a href="#d3">三</a><a href="#d4">四</a><a href="#d5">五</a><a href="#d6">六</a>
     <a href="#d7">七</a><a href="#d8">八</a><a href="#d9">九</a><a href="#d10">十</a><a href="#d11">十一</a>
-    <a href="#guide">葉</a><a href="#home">帰</a>
+    <a href="#guide">葉</a><a href="#beyond">遊</a><a href="#home">帰</a>
   </nav>
   <button class="theme" id="themeBtn" aria-label="Toggle light and dark" title="Light / dark">◐</button>
 </aside>
@@ -318,6 +340,9 @@ figcaption .cr a{color:inherit; text-decoration:none; border-bottom:1px solid va
       <label><input type="checkbox" data-k="rikugien"><span><span class="when">Oct–Nov</span><span class="what">Rikugien autumn illumination ticket, Sat 28 Nov</span><span class="how">Advance online ¥900 (door ¥1,100). 2025 ran 22 Nov–5 Dec; 2026 dates announced ~Sept.</span></span></label>
       <label><input type="checkbox" data-k="murin"><span><span class="when">Oct</span><span class="what">Murin-an timed entry, Sun 22 Nov (+ ask about English garden tour)</span><span class="how">murin-an.jp — daily cap in peak season. Run by Ueyakato Landscape; gardener-led tours exist.</span></span></label>
       <label><input type="checkbox" data-k="hotel"><span><span class="when">Now</span><span class="what">Kyoto rooms 22–27 Nov (Kyoto's busiest week)</span><span class="how">Garden-view ryokan: Yachiyo (beside Nanzen-ji, Ogawa Jihei garden), Kikokusō, or a Higashiyama machiya. Kanazawa Fri 27; Tokyo Sat 28 near Haneda or Komagome.</span></span></label>
+      <label><input type="checkbox" data-k="nintendo"><span><span class="when">Now · closes 31 Aug</span><span class="what">Nintendo Museum lottery for November (Mon 23 pm)</span><span class="how">museum-tickets.nintendo.com — Nintendo account + passport ID; results 1 Sept, pay by 7 Sept. ¥3,300.</span></span></label>
+      <label><input type="checkbox" data-k="yamazaki"><span><span class="when">4–8 Sept</span><span class="what">Suntory Yamazaki distillery tour lottery (optional)</span><span class="how">Results 15 Sept. ¥3,000. Long odds — treat as a bonus, not a plan.</span></span></label>
+      <label><input type="checkbox" data-k="kabuki"><span><span class="when">Day before</span><span class="what">Kabuki-za single-act ticket, Thu 19 or Fri 20</span><span class="how">Kaomise runs 1–25 Nov; hitomaku-mi tickets ¥1,000–2,000 online from 12:00 the previous day. Also: teamLab ~2 months out; Shibuya Sky 14 days out at 00:00 JST.</span></span></label>
       <label><input type="checkbox" data-k="phyto"><span><span class="when">Before you fly</span><span class="what">Read the plant-import rules for home</span><span class="how">See “Bringing it home” below. Decide in advance whether you're buying seeds only, or tools and pots.</span></span></label>
     </div>
     <p class="clock-note">Ticks are remembered on this device.</p>
@@ -630,6 +655,87 @@ figcaption .cr a{color:inherit; text-decoration:none; border-bottom:1px solid va
   </div>
 </section>
 
+
+<!-- BEYOND THE GARDEN -->
+<section class="block" id="beyond">
+  <div class="block-head reveal">
+    <div class="k kanji">遊</div>
+    <div>
+      <h2 class="display">Beyond the garden</h2>
+      <p>Everything else Japan is good at, filtered for what’s actually on between 19 and 29 November 2026 and where it slots into Sam’s week. Nothing here is required — but the top few are worth bending a day for.</p>
+    </div>
+  </div>
+
+  <div class="cat reveal">
+    <div class="cat-head"><span class="k kanji sumo">相撲</span><h3>Sumo — the honest version</h3></div>
+    <p class="verdict">The November Grand Tournament is in <b>Fukuoka</b> (Sun 8 – Sun 22 Nov), not Tokyo, and most Tokyo stables decamp there — so there is no tournament and no reliable morning practice to watch during Sam’s dates. Fukuoka on the final day (Sun 22) is technically reachable from Kyoto (Nozomi 2h45, ~¥16,500 each way) but only with a ticket bought the moment they go on sale (19 Sept), on his arrival-in-Kyoto day. Verdict: no. What’s left is still good.</p>
+    <div class="bc">
+      <article><h4>Sumo Museum, Ryōgoku Kokugikan <span class="jp">相撲博物館</span></h4><p>Inside the empty stadium: woodblock prints, championship banners, the ranking scrolls. Small, free, and Thu/Fri only (closed weekends).</p><div class="fits"><b>Fits</b>Thu 19 at 13:00 on the way in (Ryōgoku is 20 min from Shinjuku), then the greenhouse — or skip</div><div class="meta"><span>10:00–16:30, closed Sat–Sun</span><span>Free</span><span>Ryōgoku (JR Sōbu)</span></div></article>
+      <article><h4>Chanko-nabe in Ryōgoku <span class="jp">ちゃんこ鍋</span></h4><p>The wrestlers’ stew, at Chanko Tomoegata (run by an ex-stable) — four broths, giant pots, cheap at lunch.</p><div class="fits"><b>Fits</b>Fri 20 dinner (Ikebukuro → Ryōgoku 30 min) or Sat 28 16:00 before Rikugien</div><div class="meta"><span>Lunch ¥1,260–2,000 · dinner ¥3,000–5,000</span><span>2 min from station</span></div></article>
+      <article><h4>Ex-rikishi demonstration + chanko <span class="jp">相撲体験</span></h4><p>Retired wrestlers show the ring rituals and bouts, take questions, let you push. Touristy, well done — the only way to see sumo up close this month.</p><div class="fits"><b>Fits</b>Sat 28 afternoon (Ryōgoku Edo Noren) — book 1–2 weeks ahead</div><div class="meta"><span>¥10,000–15,000 incl. meal</span><span>Ryōgoku / Asakusa</span><span>Viator, GYG, Rakuten</span></div></article>
+      <article><h4>Football instead? <span class="jp">Jリーグ</span></h4><p>Baseball is over (Japan Series ended 1 Nov). J.League now runs autumn–spring: no FC Tokyo home game on his dates, but Zweigen Kanazawa (J3) may be at home Sat 28 — a cheap, loud, small-town fixture. Check jleague.jp/en in October.</p><div class="fits"><b>Fits</b>Sat 28 Kanazawa (only if the 12:30 train moves later)</div><div class="meta"><span>~¥2,000–3,000</span></div></article>
+    </div>
+  </div>
+
+  <div class="cat reveal">
+    <div class="cat-head"><span class="k kanji tech">遊</span><h3>Tech &amp; play</h3></div>
+    <div class="bc">
+      <article><h4>Nintendo Museum, Uji <span class="jp">ニンテンドーミュージアム</span></h4><p>Opened 2024 in the old card factory: a no-photos history hall from 1889 hanafuda onward, then oversized versions of every controller to play with (10 coins). Lottery-only tickets — <b>the window for November visits is August, closing 31 Aug</b>; results 1 Sept.</p><div class="fits"><b>Fits</b>Mon 23 pm (open on the holiday; closed Tue) — swap the botanical garden, add Byōdō-in and Uji tea</div><div class="meta"><span>10:00–20:00, closed Tue</span><span>¥3,300</span><span>museum-tickets.nintendo.com</span></div></article>
+      <article><h4>teamLab Botanical Garden, Osaka <span class="jp">チームラボ 長居植物園</span></h4><p>The one teamLab a gardener should see: a permanent night walk through Nagai’s real botanical collection — trees, ponds and lawns lit and sounding in response to you. Outdoors, so dress warm.</p><div class="fits"><b>Fits</b>Tue 24 or Wed 25 evening (Kyoto → Nagai ~1 h) — closed Mon 23</div><div class="meta"><span>Sunset (~17:45) to 21:00</span><span>¥1,800</span><span>Timed ticket, teamlab.art</span></div></article>
+      <article><h4>teamLab Borderless, Azabudai Hills <span class="jp">チームラボボーダレス</span></h4><p>The Tokyo flagship — rooms of moving light you wander through without a map. Sells out weekends; dynamic pricing.</p><div class="fits"><b>Fits</b>Thu 19 evening (open to ~21:00) if the jet lag is kind, or Fri 20 night</div><div class="meta"><span>¥3,600–5,600</span><span>Book ~2 months out</span></div></article>
+      <article><h4>Shibuya Sky at sunset <span class="jp">渋谷スカイ</span></h4><p>Open rooftop 230 m over the crossing; Fuji on a clear November evening. Sunset is 16:30 and those slots vanish in minutes when they release <b>14 days ahead at 00:00 JST</b>.</p><div class="fits"><b>Fits</b>Sat 28 dusk before Rikugien (Shibuya → Komagome 25 min) — set an alarm for 14 Nov</div><div class="meta"><span>¥2,500–3,000</span><span>Skytree (from ¥1,800) is the no-booking fallback</span></div></article>
+      <article><h4>Suntory Yamazaki Distillery <span class="jp">山崎蒸溜所</span></h4><p>Between Kyoto and Osaka; the birthplace of Japanese whisky. Tours are a lottery — <b>for November the window is 4–8 Sept</b>, results 15 Sept. Long odds; the shop/tasting counter also needs booking.</p><div class="fits"><b>Fits</b>Any Kyoto afternoon (JR Yamazaki 15 min)</div><div class="meta"><span>Tour ¥3,000 · Prestige ¥10,000</span><span>suntory.com/factory/yamazaki</span></div></article>
+      <article><h4>Akihabara <span class="jp">秋葉原</span></h4><p>Yodobashi-Akiba’s nine floors of everything electric, then Super Potato and Mandarake for the retro consoles he grew up with. Free to wander; best after dark.</p><div class="fits"><b>Fits</b>Fri 20 evening or Sat 28</div><div class="meta"><span>Free</span></div></article>
+      <article><h4>Kyoto Railway Museum <span class="jp">京都鉄道博物館</span></h4><p>Fifty-odd locomotives including a working steam ride, and the roundhouse. The best rainy-day card in Kyoto.</p><div class="fits"><b>Fits</b>Rain swap, any day but Wed</div><div class="meta"><span>10:00–17:00, closed Wed</span><span>¥1,500</span><span>20 min walk from Kyoto stn</span></div></article>
+      <article><h4>Skip list <span class="jp">×</span></h4><p>Miraikan (science museum) is <b>closed for refurbishment 1 Oct 2026 – Apr 2027</b>. Ghibli Museum tickets for November went on sale 10 Oct and are gone in minutes — only worth trying for a returned ticket. Robot Restaurant is closed; its successor Samurai Restaurant (Kabukichō, ¥8,000–10,000) is loud fun if that’s the mood. Expo 2025’s site is dismantled.</p></article>
+    </div>
+  </div>
+
+  <div class="cat reveal">
+    <div class="cat-head"><span class="k kanji food">食</span><h3>Food &amp; drink</h3></div>
+    <div class="bc">
+      <article><h4>Tsukiji Outer Market <span class="jp">築地場外市場</span></h4><p>The old fish market’s street of stalls: tamagoyaki on a stick, uni, knives, tea. Mostly shut Sun and Wed.</p><div class="fits"><b>Fits</b>Sat 21 at 6:30, then Ueno → Ōmiya (Tsukiji → Ueno 20 min)</div><div class="meta"><span>~5:00–14:00</span><span>¥2,000 breakfast</span></div></article>
+      <article><h4>Depachika at Isetan Shinjuku <span class="jp">デパ地下</span></h4><p>Basement food hall of a department store — the best in Tokyo, and next to Shinjuku Gyoen. Buy the evening’s picnic or wagashi to photograph.</p><div class="fits"><b>Fits</b>Thu 19 after the greenhouse</div><div class="meta"><span>10:00–20:00</span><span>¥300–1,500 items</span></div></article>
+      <article><h4>Ramen, three ways <span class="jp">ラーメン</span></h4><p>Fuunji (Shinjuku) for tsukemen dipping noodles; Nagi in Golden Gai for sardine broth at ten seats; Afuri for yuzu-salt. Ichiran for 24-hour solo booths.</p><div class="fits"><b>Fits</b>Any Tokyo night</div><div class="meta"><span>¥900–1,300</span></div></article>
+      <article><h4>Sushi — pick a rung <span class="jp">寿司</span></h4><p>Conveyor (Uobei Shibuya, Sushiro) for ¥1,500 fun; a mid-range omakase lunch (Manten Sushi Marunouchi, Sushi Tokyo Ten) ¥6,000–12,000 is where it gets serious. Toyosu’s tuna auction walkway is free at 5:30, no booking.</p><div class="fits"><b>Fits</b>Fri 20 or Sat 21 lunch; the omakase on Sat 28 if he wants one big meal</div><div class="meta"><span>¥1,500 → ¥12,000</span></div></article>
+      <article><h4>Yudōfu at Shoraian, Arashiyama <span class="jp">湯豆腐 松籟庵</span></h4><p>Kyoto’s tofu hot-pot in a calligrapher’s hillside villa above the river — the lunch that belongs to Thu 26. Book weeks ahead.</p><div class="fits"><b>Fits</b>Thu 26 12:30, between Gio-ji and the Randen</div><div class="meta"><span>Courses ¥3,800 / ¥4,600 / ¥5,800</span><span>Yudofu Sagano ¥4,400 is the walk-in fallback</span></div></article>
+      <article><h4>Kaiseki without the ceremony <span class="jp">枝魯枝魯ひとしな</span></h4><p>Giro Giro Hitoshina on the Kiyamachi riverside: a young, counter-side take on the multi-course meal at a fraction of ryokan prices. Cash. A proper kaiseki dinner elsewhere is ¥10,000–15,000; lunches half that.</p><div class="fits"><b>Fits</b>Sun 22 or Wed 25 dinner</div><div class="meta"><span>~¥6,000–7,000</span><span>Book by phone / JPNEAZY</span></div></article>
+      <article><h4>Nishiki Market + Aritsugu knives <span class="jp">錦市場 · 有次</span></h4><p>Five blocks of pickles, yuba, dashimaki and soy doughnuts — eat at the stall, not walking. Aritsugu (since 1560) engraves your name on a knife from ¥5,000. Knives go in the hold bag.</p><div class="fits"><b>Fits</b>Wed 25 late afternoon or Thu 26 midday, before 10:30 for the market ideally</div><div class="meta"><span>~9:30–18:00</span><span>Free</span></div></article>
+      <article><h4>Fushimi: shrine at dawn, sake by ten <span class="jp">伏見稲荷 · 月桂冠</span></h4><p>Fushimi Inari’s ten thousand torii are one JR stop past Tōfuku-ji — empty before 8:00. Then the Gekkeikan sake museum (¥600 with three tastings and a bottle) and Kizakura’s brewpub. Ties Mon 23 together.</p><div class="fits"><b>Fits</b>Mon 23 after Tōfuku-ji, in place of Kōju-en</div><div class="meta"><span>Inari 24 h, free</span><span>Gekkeikan 10:00–16:00, book online</span></div></article>
+      <article><h4>Kanazawa: crab season <span class="jp">香箱蟹 · 近江町</span></h4><p>Snow-crab season opened 6 Nov. Kōbako-gani (small female, ¥1,500–3,000) at an Ōmichō counter is the move; branded male crab is ¥15,000+. Kaisendon ¥2,500–5,000; Kanazawa oden at Kuroyuri (in the station) or Akadama; gold-leaf soft serve for the photo.</p><div class="fits"><b>Fits</b>Fri 27 lunch and dinner — the market is quiet on Sundays but he’s there Fri/Sat</div><div class="meta"><span>Ōmichō ~9:00–17:00</span><span>Cash at the small counters</span></div></article>
+      <article><h4>Fukumitsuya sake tasting <span class="jp">福光屋</span></h4><p>Kanazawa’s oldest brewery (1625): a 45-minute English tasting, or the 90-minute tour that runs Fridays at 15:00 in the brewing season.</p><div class="fits"><b>Fits</b>Fri 27 15:00 (would replace the Kenroku-en afternoon — do the tasting instead of the tour)</div><div class="meta"><span>¥3,300</span><span>Book from a month ahead</span></div></article>
+      <article><h4>Uji tea <span class="jp">中村藤吉 · 通圓</span></h4><p>Nakamura Tokichi’s matcha and a tea-grinding session; Tsuen by the bridge has been pouring tea since 1160. Byōdō-in — the temple on the ¥10 coin — is next door.</p><div class="fits"><b>Fits</b>Mon 23 pm with the Nintendo Museum, if the lottery comes good</div><div class="meta"><span>Byōdō-in ¥600 + ¥300 hall tour</span><span>Tea sessions ~¥5,000</span></div></article>
+      <article><h4>Small things worth knowing <span class="jp">コンビニ</span></h4><p>No tipping, anywhere. Konbini egg sandwiches (¥250) and onigiri are genuinely good breakfast. Kissaten coffee (Café de l’Ambre, Ginza) is a ritual, ¥800–1,000. Carry ¥10–20k cash: small counters, shrines and markets don’t take cards.</p></article>
+    </div>
+  </div>
+
+  <div class="cat reveal">
+    <div class="cat-head"><span class="k kanji night">夜</span><h3>Culture &amp; evenings</h3></div>
+    <div class="bc">
+      <article><h4>Kabuki-za, Ginza — Kaomise <span class="jp">歌舞伎座 吉例顔見世</span></h4><p>The November “face-showing” programme runs 1–25 Nov 2026. Don’t buy a whole evening: a <b>single-act ticket</b> (¥1,000–2,000, on sale online from 12:00 the day before) plus the English earphone guide gets you 45–90 minutes of the real thing.</p><div class="fits"><b>Fits</b>Thu 19 or Fri 20 evening</div><div class="meta"><span>kabukiweb.net</span><span>Full seats ¥4,000–20,000</span></div></article>
+      <article><h4>Kiyomizu-dera by night <span class="jp">清水寺 夜間拝観</span></h4><p>The great veranda over a valley of lit maples, and a blue beam into the sky. Autumn opening 21–30 Nov to 21:30 — queues, so arrive after 20:00.</p><div class="fits"><b>Fits</b>Wed 25 or Thu 26 evening (instead of Kitano / after Ginkaku-ji)</div><div class="meta"><span>¥500</span><span>No booking</span></div></article>
+      <article><h4>Gion Corner &amp; the geiko rule <span class="jp">ギオンコーナー</span></h4><p>An hour’s sampler — tea ceremony, koto, kyōgen comedy, bunraku puppets, a maiko dance — at 18:00 or 19:00. Then Hanamikoji at dusk to see geiko heading to work: public street only, no photos, no following; the private lanes carry ¥10,000 fines.</p><div class="fits"><b>Fits</b>Sun 22 or Tue 24 early evening</div><div class="meta"><span>¥5,500</span><span>Yasaka Hall, Gion</span></div></article>
+      <article><h4>Zazen or tea, done properly <span class="jp">坐禅 · 茶道</span></h4><p>An English-language sitting at Shunkō-in (Myōshin-ji) — a garden temple, so it fits — or a 45-minute tea ceremony at Camellia (Ninenzaka). Both quieter than they sound.</p><div class="fits"><b>Fits</b>Wed 25 late (Myōshin-ji is near Ryōan-ji) / any Kyoto afternoon</div><div class="meta"><span>¥3,000–4,000</span><span>Book online</span></div></article>
+      <article><h4>Sanjūsangendō &amp; Nijō <span class="jp">三十三間堂 · 二条城</span></h4><p>1,001 gilded Kannon in a 120 m hall; and Nijō Castle’s nightingale floors (its autumn projection show, if repeated, runs to early Dec).</p><div class="fits"><b>Fits</b>Rain swaps</div><div class="meta"><span>¥600 / ¥1,300</span></div></article>
+      <article><h4>Bathhouses <span class="jp">銭湯 · 温泉</span></h4><p>Funaoka Onsen (Kyoto, 1923, carved panels) ¥550; Thermae-Yu next to Golden Gai ¥2,400; Somei Onsen Sakura beside Komagome ~¥1,500 — after Rikugien. Tattoos covered with the stickers they sell; small ones are fine at neighbourhood sentō.</p><div class="fits"><b>Fits</b>Any tired evening</div></article>
+      <article><h4>Tokyo after dark <span class="jp">浅草 · ゴールデン街</span></h4><p>Sensō-ji lit and empty until 23:00, free; Golden Gai’s two hundred six-seat bars (¥500–1,000 cover) after 21:00; karaoke ¥1,000–2,000/hr; Meiji Jingū Gaien’s ginkgo avenue is gold 20–30 Nov.</p><div class="fits"><b>Fits</b>Fri 20 / Sat 28</div></article>
+      <article><h4>Kanazawa evening <span class="jp">21世紀美術館 · ひがし茶屋街</span></h4><p>21st Century Museum (Leandro Erlich’s swimming pool; open to 20:00 Fri/Sat, ~¥450–1,200), then Higashi Chaya’s lantern-lit tea-house streets. The Ninja Temple (¥1,200) is phone-booking only.</p><div class="fits"><b>Fits</b>Fri 27 between the two light-ups</div></article>
+    </div>
+  </div>
+
+  <div class="cat reveal">
+    <div class="cat-head"><span class="k kanji trip">旅</span><h3>If a garden day gets traded</h3></div>
+    <div class="bc">
+      <article><h4>Nara <span class="jp">奈良</span></h4><p>Tōdai-ji’s Great Buddha (¥800), the deer, Kasuga’s lantern paths — and Isuien garden. Nakatanidou’s high-speed mochi pounding on Sanjō-dōri.</p><div class="fits"><b>Fits</b>Swap for Thu 26 (Kintetsu 45 min)</div></article>
+      <article><h4>Himeji <span class="jp">姫路城</span></h4><p>Japan’s finest castle (¥2,500) with Kōko-en — nine Edo-style gardens — next door, illuminated in November evenings.</p><div class="fits"><b>Fits</b>Shinkansen 55 min from Kyoto (~¥5,500 each way) — a full day</div></article>
+      <article><h4>Osaka evening <span class="jp">道頓堀</span></h4><p>Takoyaki and okonomiyaki on Dōtonbori (¥600–1,500), kushikatsu in Shinsekai, Umeda Sky Building’s open roof (¥2,000). Pairs with the teamLab botanical garden.</p><div class="fits"><b>Fits</b>Tue 24 / Wed 25 evening</div></article>
+      <article><h4>Super Nintendo World, USJ <span class="jp">ユニバーサル</span></h4><p>A full day and a real budget (Studio Pass ¥8,900–10,900, Express from ~¥12,000). Only if he’s a big Mario fan — the museum in Uji is the better fit for this trip.</p><div class="fits"><b>Fits</b>Would cost a Kyoto day</div></article>
+      <article><h4>Mount Hiei <span class="jp">比叡山</span></h4><p>Cable car and ropeway (¥2,000 return) to Enryaku-ji’s cedar-shadowed halls (¥1,000) — late colour and the whole of Kyoto below.</p><div class="fits"><b>Fits</b>Half a day from Demachiyanagi</div></article>
+      <article><h4>Kyoto practicals <span class="jp">京都</span></h4><p>The bus-only pass is gone — use the ¥1,100 subway+bus day pass or Suica, and prefer trains: buses crawl in maple week. Kyoto station lockers (¥400–700) are gone by 10:00; forward bags instead. Taxis via the GO app, ¥1,500–2,500 across town, are the temple-hopper’s friend. From 1 Nov 2026 tax-free shopping becomes pay-then-refund at the airport (¥5,000 minimum per shop) — allow time at Haneda.</p></article>
+    </div>
+  </div>
+</section>
+
 <!-- BRINGING IT HOME -->
 <section class="block" id="home">
   <div class="block-head reveal">
@@ -700,6 +806,7 @@ figcaption .cr a{color:inherit; text-decoration:none; border-bottom:1px solid va
 <footer>
   <div class="kanji">一期一会</div>
   <div>Ichi-go ichi-e — one time, one meeting. Hours, fees and event dates are drawn from 2025–26 published sources; illumination and exhibition dates for 2026 are typically confirmed in September. Verify Taikan-ten, Rikugien, Kenroku-en light-up and Tōfuku-ji early entry before booking flights around them.</div>
+  <div>Sterling equivalents use 215 yen to the pound (ECB reference rate, mid-August 2026) and are rounded — expect the real figure to drift by ±10% by November.</div>
   <div>Built for Sam, heading east in November 2026.</div>
 </footer>
 </main>

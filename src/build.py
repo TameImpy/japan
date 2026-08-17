@@ -38,6 +38,19 @@ def figure(m):
     cr=f'<span class="cr">Photo: {art} · {lic} · <a href="{e["page"]}" target="_blank" rel="noopener">Wikimedia Commons</a></span>'
     return f'<figure class="{cls} reveal"><img src="{e["data"]}" width="{e["w"]}" height="{e["h"]}" alt="{cap.split(" — ")[0]}" loading="lazy" decoding="async"><figcaption>{cap}{cr}</figcaption></figure>'
 src=re.sub(r'<!--(IMG|FIG):([a-z0-9]+)\|(.*?)-->',figure,src)
+RATE=215.0
+def gbp(y):
+    v=int(y.replace(',',''))/RATE
+    if v<10: return ('£%.1f'%round(v*2)/2 if False else '£%.1f'%v).replace('.0','') if v<10 else ''
+    return f'£{round(v):,}'
+def yen(m):
+    a,b=m.group(1),m.group(3)
+    if b: return f'¥{a}–{b} <span class="gbp">(~{gbp(a)}–{gbp(b)[1:]})</span>'
+    return f'¥{a} <span class="gbp">(~{gbp(a)})</span>'
+# only convert inside text, not inside tags/attributes: split on tags
+parts=re.split(r'(<[^>]+>)',src)
+parts=[p if p.startswith('<') else re.sub(r'¥(\d{1,3}(?:,\d{3})*|\d+)(–(\d{1,3}(?:,\d{3})*|\d+))?(?![\d,]\d)',yen,p) for p in parts]
+src=''.join(parts)
 out=src.replace('/*FONTS*/','\n'.join(faces))
 open('momiji.html','w',encoding='utf-8').write(out)
 print('total',len(out)//1024,'KB')

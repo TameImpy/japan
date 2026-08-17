@@ -55,3 +55,15 @@ The "pages build and deployment" workflow reported success while `https://tameim
 `src/momiji.src.html` is the editable source (fonts and images appear as `/*FONTS*/` and `<!--IMG:name|caption-->` /
 `<!--FIG:name|caption-->` placeholders). `src/build.py` expects a `fonts/` folder of TTFs and `img/embed.json`
 (produced by `fetch.py`) alongside it, and writes the finished `momiji.html` → copy to `index.html`, commit, push.
+
+## 2026-08-17 — Currency conversion is a build step, not hand-edits
+Sterling equivalents (~£) are generated in `build.py` from a single `RATE` constant (215 JPY/GBP, ECB mid-Aug 2026)
+by regex over **text nodes only** (split the HTML on tags first, so `¥` inside attributes/captions-in-comments isn't
+touched). Ranges (`¥900–1,100`) are handled; numbers use `\d{1,3}(?:,\d{3})*` so a trailing comma in prose isn't
+swallowed. To refresh the rate before the trip: change `RATE`, rebuild, push. The footer states the rate used.
+
+## 2026-08-17 — Research surprises worth remembering for any November Japan trip
+November's Grand Sumo tournament is in Fukuoka (not Tokyo) and Tokyo stables travel there, so "watch morning
+practice" is a non-starter that month; the Nintendo Museum lottery for a given month opens three months ahead
+(August for November); Miraikan is shut Oct 2026–Apr 2027; Japan's tax-free shopping switches to refund-at-airport
+on 1 Nov 2026. Check event calendars, not just opening hours.
