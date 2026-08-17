@@ -67,3 +67,10 @@ November's Grand Sumo tournament is in Fukuoka (not Tokyo) and Tokyo stables tra
 practice" is a non-starter that month; the Nintendo Museum lottery for a given month opens three months ahead
 (August for November); Miraikan is shut Oct 2026–Apr 2027; Japan's tax-free shopping switches to refund-at-airport
 on 1 Nov 2026. Check event calendars, not just opening hours.
+
+## 2026-08-17 — Build inputs (fonts/, img/) aren't in the repo
+`build.py` needs `src/fonts/*.ttf` and `src/img/embed.json`, but those were never committed (~30 MB of assets).
+They live in an old session scratchpad (`/private/tmp/claude-501/-Users-matthewrance-Documents/d14f…/scratchpad/`).
+**Fix used:** symlink `src/fonts` and `src/img` to that folder for the build, then remove the symlinks. If that
+scratchpad is ever cleaned, re-run `fetch.py` (images) and re-download the Google Fonts TTFs (see the 2026-08-15 note).
+Also: the shell cwd persists between commands, so `cd src && …` fails if you're already inside `src` — use absolute paths.
